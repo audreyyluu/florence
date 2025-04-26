@@ -25,6 +25,7 @@ export function Header() {
           <span className="text-2xl font-bold">CareCam</span>
         </Link>
         <nav className="flex items-center gap-4">
+          <AuthButton trigger={<Button size="lg">Dashboard</Button>} />
           <Unauthenticated>
             <AuthButton trigger={<Button variant="outline">Sign Up</Button>} />
             <AuthButton trigger={<Button>Login</Button>} />
