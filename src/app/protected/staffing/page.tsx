@@ -324,7 +324,7 @@ export default function StaffingPage() {
         </div>
         
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Total Staff</CardTitle>
@@ -337,7 +337,7 @@ export default function StaffingPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          {/* <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Room Coverage</CardTitle>
             </CardHeader>
@@ -347,7 +347,7 @@ export default function StaffingPage() {
                 {roomsWithStaff} of {totalRooms} rooms with staff present
               </p>
             </CardContent>
-          </Card>
+          </Card> */}
           
           <Card>
             <CardHeader className="pb-2">
