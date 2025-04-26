@@ -21,8 +21,9 @@ To set it up yourself:
 
 1. Clone the repository
 2. Run `pnpm install` to install the dependencies
-3. Run `pnpm dev` to start the development server
+3. Run `npx @convex-dev/auth` to enable the authentification feature
 4. Run `npx convex dev` to start the Convex development server
+5. Run `pnpm dev` (in a separate terminal) to start the development server
 
 Running the convex development server is critical for ensuring the backend convex functions are correctly updating.
 
