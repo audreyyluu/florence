@@ -1,0 +1,124 @@
+import React from 'react';
+import { AuthButton } from '@/components/auth/AuthButton';
+import { Button } from '../ui/button';
+import { motion } from 'framer-motion';
+import { Eye, Shield, Bell, Activity } from 'lucide-react';
+
+export function HeroContent() {
+  const features = [
+    {
+      icon: Eye,
+      title: "Real-time Monitoring",
+      description: "Monitor patient rooms in real-time with advanced video surveillance to ensure patient safety and proper care.",
+      imageUrl: "https://picsum.photos/seed/monitoring/600/400"
+    },
+    {
+      icon: Activity,
+      title: "Activity Detection",
+      description: "Automatically detect potentially dangerous activities like falls, coughing, or distress using AI-powered analysis.",
+      imageUrl: "https://picsum.photos/seed/activity/600/400"
+    },
+    {
+      icon: Bell,
+      title: "Instant Alerts",
+      description: "Receive immediate notifications when patients need attention, allowing for faster response times.",
+      imageUrl: "https://picsum.photos/seed/alerts/600/400"
+    },
+    {
+      icon: Shield,
+      title: "Secure Access",
+      description: "Hospital-grade security ensures that only authorized personnel can access surveillance footage.",
+      imageUrl: "https://picsum.photos/seed/security/600/400"
+    }
+  ];
+
+  return (
+    <div className="flex flex-col items-center justify-between min-h-[500px] pt-8 px-4 sm:px-6 lg:px-8 gap-8">
+      <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-8 mb-16 h-screen py-0">
+        <div className="lg:w-1/2 w-full max-w-4xl mx-auto lg:mx-0 space-y-6 text-center lg:text-left">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-10 mx-auto lg:mx-0"
+          >
+            <p className="text-xs font-medium text-blue-600">Advanced Hospital Surveillance</p>
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter"
+          >
+            Enhancing Patient Care with CareCam
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-lg sm:text-xl text-gray-600 max-w-xl"
+          >
+            CareCam provides advanced surveillance solutions for hospitals, enabling medical staff to monitor patients remotely and respond quickly to emergencies.
+          </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="pt-4 flex flex-wrap gap-4 justify-center lg:justify-start"
+          >
+            <AuthButton trigger={<Button size="lg">Sign Up</Button>} />
+            <AuthButton trigger={<Button variant="outline" size="lg">Login</Button>} />
+          </motion.div>
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="lg:w-1/2 w-full mt-8 lg:mt-0 rounded-lg overflow-hidden shadow-lg"
+        >
+          <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20"></div>
+            <div className="flex flex-col items-center justify-center z-10">
+              <Eye className="h-16 w-16 text-blue-400 mb-4" />
+              <p className="text-white text-lg">Video Surveillance Demo</p>
+              <p className="text-gray-400 text-sm mt-2">Live monitoring of patient rooms</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {features.map((feature, index) => (
+        <motion.div 
+          key={index}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center w-full py-16 gap-8`}
+        >
+          <div className="lg:w-1/2 w-full">
+            <img 
+              src={feature.imageUrl} 
+              alt={feature.title} 
+              className="rounded-lg shadow-md w-full h-auto object-cover"
+            />
+          </div>
+          <div className="lg:w-1/2 w-full space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <feature.icon className="h-6 w-6 text-blue-500" />
+              <h2 className="text-2xl font-bold">{feature.title}</h2>
+            </div>
+            <p className="text-lg text-gray-600">{feature.description}</p>
+            <Button variant="link" className="p-0 text-blue-600 hover:text-blue-800">
+              Learn more <span aria-hidden="true">→</span>
+            </Button>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
