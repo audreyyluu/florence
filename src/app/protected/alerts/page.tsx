@@ -241,6 +241,56 @@ export default function AlertsHistoryPage() {
           </div>
         </div>
         
+        {/* Summary Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">High Priority Alerts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {alerts.filter(a => a.severity === 'high' && !a.resolved).length}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Unresolved high priority alerts
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Total Alerts Today</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {alerts.filter(a => {
+                  const today = new Date()
+                  return a.timestamp.getDate() === today.getDate() &&
+                    a.timestamp.getMonth() === today.getMonth() &&
+                    a.timestamp.getFullYear() === today.getFullYear()
+                }).length}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Alerts triggered in the last 24 hours
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Resolution Rate</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {Math.round((alerts.filter(a => a.resolved).length / alerts.length) * 100)}%
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Percentage of alerts that have been resolved
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Filters */}
         <Card>
           <CardHeader className="pb-3">
@@ -425,56 +475,6 @@ export default function AlertsHistoryPage() {
             </CardFooter>
           )}
         </Card>
-        
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">High Priority Alerts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {alerts.filter(a => a.severity === 'high' && !a.resolved).length}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Unresolved high priority alerts
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Alerts Today</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {alerts.filter(a => {
-                  const today = new Date()
-                  return a.timestamp.getDate() === today.getDate() &&
-                    a.timestamp.getMonth() === today.getMonth() &&
-                    a.timestamp.getFullYear() === today.getFullYear()
-                }).length}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Alerts triggered in the last 24 hours
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Resolution Rate</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {Math.round((alerts.filter(a => a.resolved).length / alerts.length) * 100)}%
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Percentage of alerts that have been resolved
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   )
