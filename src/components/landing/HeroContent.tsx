@@ -69,8 +69,6 @@ export function HeroContent() {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="pt-4 flex flex-wrap gap-4 justify-center lg:justify-start"
           >
-            <AuthButton trigger={<Button size="lg">Sign Up</Button>} />
-            <AuthButton trigger={<Button variant="outline" size="lg">Login</Button>} />
           </motion.div>
         </div>
 
