@@ -1,0 +1,41 @@
+{
+  "full_name": "Thomas Abernathy",
+  "location": "Denver, Colorado",
+  "age": 62,
+  "pre_existing_conditions": [
+    "Hypertension",
+    "Type 2 Diabetes",
+    "Coronary Artery Disease",
+    "Chronic Obstructive Pulmonary Disease (COPD)"
+  ],
+  "current_symptoms": [
+    "Shortness of breath",
+    "Chest pain",
+    "Hypoxemia",
+    "Elevated blood pressure",
+    "Fatigue"
+  ],
+  "diagnosis": "Acute Myocardial Infarction (Heart Attack)",
+  "allergies": "Penicillin",
+  "medications": [
+    "Metformin",
+    "Lisinopril",
+    "Atorvastatin",
+    "Albuterol Inhaler"
+  ],
+  "close_contacts": [
+    {
+      "name": "Elizabeth Abernathy",
+      "relationship": "Spouse",
+      "location": "Denver, Colorado",
+      "phone_number": "303-555-1212"
+    },
+    {
+      "name": "Michael Abernathy",
+      "relationship": "Son",
+      "location": "Chicago, Illinois",
+      "phone_number": "773-555-2323"
+    }
+  ]
+}
+

@@ -1,0 +1,35 @@
+{
+  "full_name": "Aiko Tanaka",
+  "location": "Los Angeles, CA",
+  "age": 32,
+  "pre_existing_conditions": [
+    "Gestational Diabetes",
+    "Preeclampsia"
+  ],
+  "current_symptoms": [
+    "Elevated Blood Pressure",
+    "Proteinuria",
+    "Abdominal Pain",
+    "Contractions"
+  ],
+  "diagnosis": "Impending Eclampsia",
+  "allergies": "No Known Allergies",
+  "medications": [
+    "Magnesium Sulfate",
+    "Labetalol"
+  ],
+  "close_contacts": [
+    {
+      "name": "Kenji Tanaka",
+      "relationship": "Spouse",
+      "location": "Los Angeles, CA",
+      "phone_number": "213-555-1212"
+    },
+    {
+      "name": "Sakura Ito",
+      "relationship": "Mother",
+      "location": "San Francisco, CA",
+      "phone_number": "415-555-2323"
+    }
+  ]
+}

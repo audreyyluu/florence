@@ -289,7 +289,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     setIsPlaying(false)
   }
   
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!inputValue.trim()) return
     
@@ -297,21 +297,49 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     setMessages(prev => [...prev, userMessage])
     setInputValue("")
     
-    setTimeout(() => {
-      const botResponses = [
-        "I'll check on that for you.",
-        "The patient's vitals are currently stable.",
-        "I've notified the nursing staff about your concern.",
-        "The last medication was administered 2 hours ago.",
-        "Would you like me to alert the doctor on call?"
-      ]
+    // Show loading state
+    const loadingMessage = { text: "Thinking...", sender: 'bot' as const, timestamp: new Date() }
+    setMessages(prev => [...prev, loadingMessage])
+    
+    try {
+      // Call the backend API
+      const response = await fetch('http://localhost:8000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          room_number: roomNumber.toString(),
+          message: userMessage.text
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to get response from assistant');
+      }
+      
+      const data = await response.json();
+      
+      // Replace loading message with the actual response
+      setMessages(prev => prev.filter(msg => msg !== loadingMessage));
       const botMessage = {
-        text: botResponses[Math.floor(Math.random() * botResponses.length)],
+        text: data.response,
         sender: 'bot' as const,
         timestamp: new Date()
       }
       setMessages(prev => [...prev, botMessage])
-    }, 1000)
+    } catch (error) {
+      console.error('Error calling chat API:', error);
+      
+      // Replace loading message with an error message
+      setMessages(prev => prev.filter(msg => msg !== loadingMessage));
+      const errorMessage = {
+        text: "Sorry, I'm having trouble connecting to the assistant. Please try again later.",
+        sender: 'bot' as const,
+        timestamp: new Date()
+      }
+      setMessages(prev => [...prev, errorMessage])
+    }
   }
   
   const handleSaveMedicalHistory = () => {

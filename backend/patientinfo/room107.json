@@ -1,0 +1,39 @@
+{
+  "full_name": "Mei Chen",
+  "location": "San Francisco, CA",
+  "age": 78,
+  "pre_existing_conditions": [
+    "Hypertension",
+    "Type 2 Diabetes",
+    "Osteoarthritis",
+    "Chronic Kidney Disease"
+  ],
+  "current_symptoms": [
+    "Shortness of breath",
+    "Chest pain",
+    "Swelling in ankles",
+    "Fatigue"
+  ],
+  "diagnosis": "Congestive Heart Failure",
+  "allergies": "Sulfa drugs",
+  "medications": [
+    "Lisinopril",
+    "Metformin",
+    "Aspirin",
+    "Furosemide"
+  ],
+  "close_contacts": [
+    {
+      "name": "Li Wei",
+      "relationship": "Daughter",
+      "location": "Los Angeles, CA",
+      "phone_number": "213-555-1234"
+    },
+    {
+      "name": "David Chen",
+      "relationship": "Son",
+      "location": "Seattle, WA",
+      "phone_number": "206-555-5678"
+    }
+  ]
+}

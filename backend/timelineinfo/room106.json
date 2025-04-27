@@ -1,0 +1,83 @@
+{
+    "room_number": "106",
+    "predicted_symptoms": [
+      "Shortness of Breath",
+      "Elevated Blood Pressure",
+      "Fatigue",
+      "Fluid Retention",
+      "Anxiety",
+      "Restlessness",
+      "Dry Mouth",
+      "Discomfort"
+    ],
+    "timestamps": [
+      {
+        "start_time": "07:00 AM",
+        "end_time": "07:15 AM",
+        "symptoms": [
+          "Shortness of Breath",
+          "Elevated Blood Pressure",
+          "Anxiety"
+        ],
+        "confidence": 0.8,
+        "description": "Latoya Jackson, 38, is seen lying in the hospital bed. She appears to be experiencing some shortness of breath, shown by her slightly elevated chest movements. Her blood pressure is likely elevated due to her diagnosis of Pulmonary Embolism, as well as her high anxiety level. The patient looks uncomfortable.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "08:30 AM",
+        "end_time": "08:45 AM",
+        "symptoms": [
+          "Restlessness",
+          "Fatigue"
+        ],
+        "confidence": 0.7,
+        "description": "The patient is restless, shifting positions in the bed every few minutes. She displays signs of fatigue. Overall showing discomfort.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "10:00 AM",
+        "end_time": "10:15 AM",
+        "symptoms": [
+          "Dry Mouth",
+          "Discomfort"
+        ],
+        "confidence": 0.6,
+        "description": "The patient licks her lips frequently and asks for water, indicating a dry mouth, potentially due to medications or oxygen therapy. Overall showing discomfort.",
+        "danger_level": "Low"
+      },
+      {
+        "start_time": "12:00 PM",
+        "end_time": "12:15 PM",
+        "symptoms": [
+          "Fluid Retention",
+          "Shortness of Breath"
+        ],
+        "confidence": 0.7,
+        "description": "Slight swelling is visible in Latoya's legs. She is showing some breathing difficulities. Latoya is experiencing fluid retention, a common symptom of Pulmonary Embolism.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "02:30 PM",
+        "end_time": "02:45 PM",
+        "symptoms": [
+          "Elevated Blood Pressure",
+          "Anxiety"
+        ],
+        "confidence": 0.8,
+        "description": "Latoya's blood pressure is likely still elevated, considering her diagnosis and the stress of the hospital environment. Her anxiety is visibly elevated.",
+        "danger_level": "Moderate"
+      }
+    ],
+    "danger_level": "Moderate",
+    "description": "Latoya Jackson, a 38-year-old patient diagnosed with Pulmonary Embolism, exhibits several symptoms including shortness of breath, restlessness, fatigue, fluid retention, dry mouth, elevated blood pressure, and high anxiety levels. She is receiving treatment, and her condition is being closely monitored.",
+    "vitals": {
+      "heart_rate": 92.0,
+      "blood_pressure": "145/90",
+      "blood_oxygen": 94.0,
+      "blood_glucose": 110.0,
+      "temperature": 37.2,
+      "respiratory_rate": 20.0,
+      "pulse_rate": 92.0
+    },
+    "admission_date": "2024-07-10"
+  }

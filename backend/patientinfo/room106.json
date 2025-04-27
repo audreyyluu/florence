@@ -1,0 +1,37 @@
+{
+  "full_name": "Latoya Jackson",
+  "location": "Atlanta, GA",
+  "age": 38,
+  "pre_existing_conditions": [
+    "Obesity",
+    "Hypertension",
+    "Sleep Apnea"
+  ],
+  "current_symptoms": [
+    "Shortness of breath",
+    "Elevated blood pressure",
+    "Fatigue",
+    "Fluid retention"
+  ],
+  "diagnosis": "Pulmonary Embolism",
+  "allergies": "Sulfa drugs",
+  "medications": [
+    "Anticoagulants",
+    "Oxygen therapy",
+    "Pain relievers"
+  ],
+  "close_contacts": [
+    {
+      "name": "Michael Jackson",
+      "relationship": "Brother",
+      "location": "Los Angeles, CA",
+      "phone_number": "310-555-1234"
+    },
+    {
+      "name": "Janet Jackson",
+      "relationship": "Sister",
+      "location": "Gary, IN",
+      "phone_number": "219-555-5678"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+    "room_number": "108",
+    "predicted_symptoms": [
+      "Labored Breathing",
+      "Restlessness",
+      "Dehydration",
+      "Anxiety",
+      "Elevated Blood Sugar"
+    ],
+    "timestamps": [
+      {
+        "start_time": "06:00 AM",
+        "end_time": "06:15 AM",
+        "symptoms": [
+          "Labored Breathing",
+          "Restlessness"
+        ],
+        "confidence": 0.85,
+        "description": "Daniel is lying in bed, visibly restless, shifting positions frequently. His breathing appears labored, with noticeable chest retractions. He is trying to work on his laptop, but looks distressed. His face appears flushed, indicating possible dehydration and/or elevated blood sugar.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "07:10 AM",
+        "end_time": "07:25 AM",
+        "symptoms": [
+          "Anxiety",
+          "Elevated Blood Sugar"
+        ],
+        "confidence": 0.75,
+        "description": "Daniel continues to work on his laptop, but his facial expressions suggest anxiety and discomfort. His breathing, while still labored, seems slightly improved. He is observed fidgeting and seems unable to focus on his screen. He is showing signs of high blood sugar due to his diabetes.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "08:00 AM",
+        "end_time": "08:15 AM",
+        "symptoms": [
+          "Dehydration",
+          "Elevated Blood Sugar"
+        ],
+        "confidence": 0.8,
+        "description": "Daniel is observed reaching for his water bottle, indicating dehydration. He takes several large gulps. There's no one around to take his vitals yet, and he has not had insulin in many hours. He still appears somewhat pale. There is not a medical monitor available in the room for vitals.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "09:00 AM",
+        "end_time": "09:15 AM",
+        "symptoms": [
+          "Elevated Blood Sugar"
+        ],
+        "confidence": 0.7,
+        "description": "Daniel is observed looking restless again as the medication is clearly wearing off as it approaches normal administering time. There are no signs of anyone attending to him, and no doctor or medical personnel are in the video. He is also fidgeting in his bed. This indicates possible further increase in blood sugar.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "10:00 AM",
+        "end_time": "10:15 AM",
+        "symptoms": [
+          "Labored Breathing",
+          "Anxiety"
+        ],
+        "confidence": 0.65,
+        "description": "Daniel is observed beginning to show labored breathing as well. Anxiety is starting to affect him. Again, still no medical staff attending to the patient.",
+        "danger_level": "Moderate"
+      }
+    ],
+    "danger_level": "Moderate",
+    "description": "Daniel Peterson, a 35-year-old patient with Type 1 Diabetes admitted for Severe Diabetic Ketoacidosis due to insulin pump malfunction, is showing signs of labored breathing, restlessness, anxiety, and possible dehydration based on visual observations. There is no medical equipment in the room to properly assess his vitals.",
+    "vitals": {
+      "heart_rate": 110.0,
+      "blood_pressure": "100/60",
+      "blood_oxygen": 94.0,
+      "blood_glucose": 300.0,
+      "temperature": 37.5,
+      "respiratory_rate": 24.0,
+      "pulse_rate": 110.0
+    },
+    "admission_date": "2024-11-10"
+  }

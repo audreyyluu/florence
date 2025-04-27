@@ -1,0 +1,34 @@
+{
+  "full_name": "Lily Chen",
+  "location": "Seattle, WA",
+  "age": 8,
+  "pre_existing_conditions": [
+    "Asthma",
+    "Eczema"
+  ],
+  "current_symptoms": [
+    "Fever",
+    "Difficulty breathing",
+    "Persistent cough"
+  ],
+  "diagnosis": "Pneumonia",
+  "allergies": "Pollen",
+  "medications": [
+    "Albuterol",
+    "Amoxicillin"
+  ],
+  "close_contacts": [
+    {
+      "name": "Mei Chen",
+      "relationship": "Mother",
+      "location": "Seattle, WA",
+      "phone_number": "206-555-1212"
+    },
+    {
+      "name": "David Chen",
+      "relationship": "Father",
+      "location": "Seattle, WA",
+      "phone_number": "206-555-1313"
+    }
+  ]
+}

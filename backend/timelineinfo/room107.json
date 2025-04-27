@@ -1,0 +1,79 @@
+{
+    "room_number": "106",
+    "predicted_symptoms": [
+      "Fatigue",
+      "Hypotension",
+      "Drowsiness",
+      "Shortness of Breath",
+      "Ankle Swelling",
+      "Muscle Weakness"
+    ],
+    "timestamps": [
+      {
+        "start_time": "06:00 AM",
+        "end_time": "06:15 AM",
+        "symptoms": [
+          "Drowsiness",
+          "Fatigue"
+        ],
+        "confidence": 0.7,
+        "description": "Mei Chen is seen lying in bed with her eyes closed for a prolonged period, showing signs of drowsiness. Her face appears pale and her movements are minimal. This suggests significant fatigue, a known symptom given her condition. The lighting is bright in the room, but she does not respond to it, indicating potential lethargy.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "08:30 AM",
+        "end_time": "08:45 AM",
+        "symptoms": [
+          "Hypotension",
+          "Shortness of Breath"
+        ],
+        "confidence": 0.65,
+        "description": "Mei is seen awake and looking out the window, but she appears to be breathing shallowly and rapidly. Her skin looks pale and slightly clammy. This may indicate low blood pressure (hypotension) and some degree of respiratory distress, possibly related to her congestive heart failure. She is not moving much and appears weak.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "12:00 PM",
+        "end_time": "12:15 PM",
+        "symptoms": [
+          "Fatigue",
+          "Ankle Swelling"
+        ],
+        "confidence": 0.7,
+        "description": "Mei is still in bed, now with her legs slightly elevated with pillows. Her ankles appear visibly swollen, confirming a known symptom of her congestive heart failure. She remains mostly still with minimal movement, indicating continuing fatigue. Her breathing rate appears unchanged, but still somewhat labored.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "03:30 PM",
+        "end_time": "03:45 PM",
+        "symptoms": [
+          "Drowsiness"
+        ],
+        "confidence": 0.6,
+        "description": "Mei is again seen with her eyes mostly closed, drifting in and out of sleep. She is not actively engaging with her surroundings. The lack of response to external stimuli could indicate a worsening of her fatigue or a potential adverse reaction to her medications. Her lips appear somewhat pale as well.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "07:00 PM",
+        "end_time": "07:15 PM",
+        "symptoms": [
+          "Muscle Weakness",
+          "Shortness of Breath"
+        ],
+        "confidence": 0.55,
+        "description": "Mei attempts to sit up slightly in bed but appears to struggle and quickly lies back down. This indicates potential muscle weakness. Her breathing appears more labored during this brief exertion. This combination of symptoms could signify deteriorating condition and possibly impending respiratory distress. The swelling in her ankles is still present.",
+        "danger_level": "High"
+      }
+    ],
+    "danger_level": "Moderate",
+    "description": "Mei Chen, a 78-year-old patient diagnosed with Congestive Heart Failure, shows signs of fatigue, drowsiness, and potential hypotension throughout the video. Ankle swelling and instances of labored breathing are observed. She exhibits minimal movement and appears weak. There is no monitor, so the numbers are estimates.",
+    "vitals": {
+      "heart_rate": 75.0,
+      "blood_pressure": "95/60",
+      "blood_oxygen": 94.0,
+      "blood_glucose": 120.0,
+      "temperature": 37.2,
+      "respiratory_rate": 20.0,
+      "pulse_rate": 76.0
+    },
+    "admission_date": "2024-01-15"
+  }

@@ -1,0 +1,69 @@
+{
+    "room_number": "104",
+    "predicted_symptoms": [
+      "Elevated Blood Pressure",
+      "Abdominal Pain",
+      "Anxiety",
+      "Restlessness",
+      "Headache",
+      "Possible Seizure Activity"
+    ],
+    "timestamps": [
+      {
+        "start_time": "00:01 AM",
+        "end_time": "00:02 AM",
+        "symptoms": [
+          "Elevated Blood Pressure",
+          "Abdominal Pain",
+          "Restlessness"
+        ],
+        "confidence": 0.8,
+        "description": "Aiko Tanaka is lying in the hospital bed with her hand on her forehead, appearing restless. Her vital signs monitor is partially visible, suggesting potentially unstable blood pressure. She appears to be experiencing some discomfort. The patient may be experiencing worsening preeclampsia symptoms. Given her pre-existing conditions and current symptoms, the danger level is elevated.",
+        "danger_level": "High"
+      },
+      {
+        "start_time": "00:03 AM",
+        "end_time": "00:04 AM",
+        "symptoms": [
+          "Anxiety",
+          "Headache"
+        ],
+        "confidence": 0.7,
+        "description": "The patient shifts in bed and appears to be experiencing some discomfort. She exhibits facial expressions indicative of pain or anxiety. Aiko Tanaka is exhibiting pain and is at risk for further complications, so more care and attention is needed to ensure safety.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "00:05 AM",
+        "end_time": "00:06 AM",
+        "symptoms": [
+          "Elevated Blood Pressure",
+          "Abdominal Pain"
+        ],
+        "confidence": 0.75,
+        "description": "The patient remains in bed and appears to be in discomfort as she is seen shifting her body to find a comfortable position. Aiko Tanaka has Preeclampsia so the risk of a seizure should be considered. The elevated blood pressure also suggests she is at risk of a stroke. ",
+        "danger_level": "High"
+      },
+      {
+        "start_time": "00:07 AM",
+        "end_time": "00:08 AM",
+        "symptoms": [
+          "Possible Seizure Activity"
+        ],
+        "confidence": 0.6,
+        "description": "Aiko Tanaka is not seizing in the video but she could be at risk for one. Monitoring her blood pressure is critical to ensure her safety and the health of the baby. Since eclampsia is a possibility, this must be treated with the utmost care.",
+        "danger_level": "Critical"
+      }
+    ],
+    "danger_level": "High",
+    "description": "Aiko Tanaka, a 32-year-old patient in Los Angeles with gestational diabetes and preeclampsia, is being monitored for impending eclampsia. She exhibits signs of elevated blood pressure, abdominal pain, anxiety, and restlessness. Continuous monitoring and management are crucial due to the potential for seizures and other complications.",
+    "vitals": {
+      "heart_rate": 110.0,
+      "blood_pressure": "160/100",
+      "blood_oxygen": 94.0,
+      "blood_glucose": 140.0,
+      "temperature": 37.5,
+      "respiratory_rate": 22.0,
+      "pulse_rate": 110.0
+    },
+    "admission_date": "2024-01-01"
+  }
