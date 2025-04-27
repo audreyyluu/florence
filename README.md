@@ -23,6 +23,7 @@ To set it up yourself:
 2. Run `pnpm install` to install the dependencies
 3. Run `npx @convex-dev/auth` to enable the authentification feature
 4. Run `npx convex dev` to start the Convex development server
+5. Cd to Backend and run 'python app.py' to start fastapi server
 5. Run `pnpm dev` (in a separate terminal) to start the development server
 
 Running the convex development server is critical for ensuring the backend convex functions are correctly updating.
