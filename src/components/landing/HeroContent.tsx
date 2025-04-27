@@ -10,25 +10,25 @@ export function HeroContent() {
       icon: Eye,
       title: "Real-Time Monitoring",
       description: "Monitor patient rooms in real-time with advanced video surveillance to ensure patient safety and proper care.",
-      imageUrl: "https://picsum.photos/seed/monitoring/600/400"
+      imagePath: "home/patient.png"
     },
     {
       icon: Bell,
       title: "Activity Detection",
       description: "Automatically detect potentially dangerous activities like falls, coughing, or distress using AI-powered analysis.",
-      imageUrl: "https://picsum.photos/seed/activity/600/400"
+      imagePath: "home/activity.png"
     },
     {
       icon: Activity,
       title: "Vitals Accessibility",
       description: "Displays patients' vitals and medical history for quick access and visibility.",
-      imageUrl: "https://picsum.photos/seed/alerts/600/400"
+      imagePath: "home/vitals.png"
     },
     {
       icon: MessageCircle,
       title: "Convenient Communication",
       description: "Chat with healthcare staff to notify them when patients need attention, allowing for quicker assistance.",
-      imageUrl: "https://picsum.photos/seed/security/600/400"
+      imagePath: "home/chat.png"
     }
   ];
 
@@ -114,7 +114,7 @@ export function HeroContent() {
         >
         <div className="lg:w-1/2 w-full">
           <img 
-          src={feature.imageUrl} 
+          src={feature.imagePath} 
           alt={feature.title} 
           className="rounded-lg shadow-md w-full h-auto object-cover"
           />
