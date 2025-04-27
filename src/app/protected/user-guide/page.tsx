@@ -94,25 +94,24 @@ export default function UserGuidePage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Welcome to CareCam</CardTitle>
+            <CardTitle>Meet Florence</CardTitle>
             <CardDescription>
               Your comprehensive hospital surveillance solution
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-6">
-              CareCam provides advanced surveillance technology designed specifically for healthcare environments, 
+              Florence provides advanced surveillance technology designed specifically for healthcare environments, 
               helping medical staff provide better care through enhanced monitoring capabilities. This guide will 
               help you understand how to use the various features of the system.
             </p>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
+              <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-8">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="rooms">Room Surveillance</TabsTrigger>
                 <TabsTrigger value="features">Other Features</TabsTrigger>
-                <TabsTrigger value="faq">FAQ</TabsTrigger>
               </TabsList>
 
               <ScrollArea className="h-[500px] pr-4">
@@ -122,18 +121,18 @@ export default function UserGuidePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <GuideSection title="What is CareCam?">
+                    <GuideSection title="Who is Florence?">
                       <p>
-                        CareCam is a comprehensive hospital surveillance system that enables medical staff to monitor 
+                        Florence is an AI agent with a comprehensive hospital surveillance system that enables operators to monitor 
                         patients remotely and respond quickly to emergencies. The system uses advanced camera technology 
                         and AI to detect potentially dangerous activities such as falls, distress signals, or unusual movements.
                       </p>
                       <p className="mt-2">
-                        With CareCam, healthcare providers can:
+                        With Florence, surveillance operators can:
                       </p>
                       <ul className="list-disc pl-6 mt-2 space-y-1">
                         <li>Monitor multiple patient rooms simultaneously</li>
-                        <li>Receive alerts when patients need attention</li>
+                        <li>Receive alerts when patients need attention based on their activity</li>
                         <li>Track staff presence in each room</li>
                         <li>View patient vitals and medical history</li>
                         <li>Communicate with other staff members</li>
@@ -163,7 +162,7 @@ export default function UserGuidePage() {
                         <FeatureCard 
                           icon={Map} 
                           title="Hospital Map" 
-                          description="Interactive map showing room status and occupancy" 
+                          description="Interact with map showing room status and occupancy" 
                           href="/protected/map" 
                         />
                       </div>
@@ -171,7 +170,7 @@ export default function UserGuidePage() {
 
                     <GuideSection title="Getting Started">
                       <p>
-                        To get started with CareCam, follow these steps:
+                        To get started with Florence, follow these steps:
                       </p>
                       <ol className="list-decimal pl-6 mt-2 space-y-2">
                         <li>
@@ -213,7 +212,7 @@ export default function UserGuidePage() {
                             <Eye className="h-5 w-5 text-primary mt-0.5" />
                             <div>
                               <span className="font-medium">Surveillance Operators Count</span>
-                              <p className="text-sm">Shows the number of staff currently monitoring the system</p>
+                              <p className="text-sm">Shows the number of operators currently monitoring the system</p>
                             </div>
                           </li>
                           <li className="flex items-start gap-2">
@@ -300,7 +299,6 @@ export default function UserGuidePage() {
                       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="border rounded-md p-4">
                           <h4 className="font-medium mb-2 flex items-center gap-2">
-                            <Camera className="h-4 w-4" />
                             Left Panel: Video Feed
                           </h4>
                           <ul className="space-y-2 text-sm">
@@ -313,15 +311,12 @@ export default function UserGuidePage() {
                           <h4 className="font-medium mb-2">Right Panel: Information Tabs</h4>
                           <ul className="space-y-2 text-sm">
                             <li className="flex items-center gap-2">
-                              <Activity className="h-4 w-4" />
                               <span>Activity - Patient behavior and events</span>
                             </li>
                             <li className="flex items-center gap-2">
-                              <Heart className="h-4 w-4" />
                               <span>Vitals - Patient health metrics and history</span>
                             </li>
                             <li className="flex items-center gap-2">
-                              <MessageSquare className="h-4 w-4" />
                               <span>Chat - Communication with staff</span>
                             </li>
                           </ul>
@@ -392,7 +387,7 @@ export default function UserGuidePage() {
 
                     <GuideSection title="Using the Chat Feature">
                       <p>
-                        The Chat tab allows communication with other staff members:
+                        The Chat tab allows communication with healthcare staff:
                       </p>
                       <ul className="list-disc pl-6 mt-2 space-y-1">
                         <li>Type messages in the input box at the bottom</li>
@@ -429,7 +424,6 @@ export default function UserGuidePage() {
                         </li>
                       </ul>
                       <div className="mt-3 flex items-center gap-2">
-                        <Bell className="h-5 w-5 text-primary" />
                         <p className="text-sm italic">
                           Access this feature by clicking "Alerts History" in the sidebar menu
                         </p>
@@ -455,7 +449,6 @@ export default function UserGuidePage() {
                         </li>
                       </ul>
                       <div className="mt-3 flex items-center gap-2">
-                        <Users className="h-5 w-5 text-primary" />
                         <p className="text-sm italic">
                           Access this feature by clicking "Staff Coordination" in the sidebar menu
                         </p>
@@ -478,18 +471,14 @@ export default function UserGuidePage() {
                         <li>
                           <span className="font-medium">Filtering and Zooming</span>
                           <div className="flex items-center gap-2 mt-1 text-sm">
-                            <Filter className="h-4 w-4" />
                             <span>Filter by floor, wing, or room status</span>
                           </div>
                           <div className="flex items-center gap-2 mt-1 text-sm">
-                            <ZoomIn className="h-4 w-4" />
-                            <ZoomOut className="h-4 w-4 ml-1" />
                             <span>Zoom in/out for better visibility</span>
                           </div>
                         </li>
                       </ul>
                       <div className="mt-3 flex items-center gap-2">
-                        <Map className="h-5 w-5 text-primary" />
                         <p className="text-sm italic">
                           Access this feature by clicking "Hospital Map" in the sidebar menu
                         </p>
@@ -515,98 +504,9 @@ export default function UserGuidePage() {
                         </li>
                       </ul>
                       <div className="mt-3 flex items-center gap-2">
-                        <Settings className="h-5 w-5 text-primary" />
                         <p className="text-sm italic">
                           Access this feature by clicking "Settings" in the sidebar menu
                         </p>
-                      </div>
-                    </GuideSection>
-                  </motion.div>
-                </TabsContent>
-
-                <TabsContent value="faq" className="space-y-6">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <GuideSection title="Frequently Asked Questions">
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium">How do I respond to an alert?</h4>
-                          <p className="text-sm mt-1">
-                            When an alert is triggered, click on the room card to navigate to the detailed view. 
-                            From there, you can assess the situation and use the chat feature to coordinate with other staff members.
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <h4 className="font-medium">Can I view historical data for a patient?</h4>
-                          <p className="text-sm mt-1">
-                            Yes, you can use the timeline feature in the Room Surveillance view to review past events. 
-                            Additionally, the Alerts History page provides a comprehensive record of all incidents.
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <h4 className="font-medium">How does the system detect dangerous behavior?</h4>
-                          <p className="text-sm mt-1">
-                            CareCam uses advanced AI algorithms to analyze video feeds in real-time. 
-                            The system can detect falls, unusual movements, signs of distress, and other potentially dangerous situations.
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <h4 className="font-medium">Is patient data secure?</h4>
-                          <p className="text-sm mt-1">
-                            Yes, CareCam employs hospital-grade security measures to protect all patient data. 
-                            Access is restricted to authorized personnel only, and all data is encrypted.
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <h4 className="font-medium">How do I add a new staff member to the system?</h4>
-                          <p className="text-sm mt-1">
-                            Adding new staff members requires administrator privileges. 
-                            Please contact your system administrator to request access for new personnel.
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <h4 className="font-medium">What should I do if a camera is not working?</h4>
-                          <p className="text-sm mt-1">
-                            If a camera feed is unavailable, first check the network connection. 
-                            If the issue persists, contact technical support for assistance.
-                          </p>
-                        </div>
-                        
-                        <div>
-                          <h4 className="font-medium">Can I access CareCam from my mobile device?</h4>
-                          <p className="text-sm mt-1">
-                            Yes, CareCam is fully responsive and can be accessed from any device with a web browser, 
-                            including smartphones and tablets.
-                          </p>
-                        </div>
-                      </div>
-                    </GuideSection>
-
-                    <GuideSection title="Need More Help?">
-                      <p>
-                        If you have additional questions or need further assistance, please contact our support team:
-                      </p>
-                      <div className="mt-3 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Email:</span>
-                          <span>support@carecam.com</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Phone:</span>
-                          <span>1-800-CARE-CAM (1-800-227-3226)</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Hours:</span>
-                          <span>24/7 Technical Support</span>
-                        </div>
                       </div>
                     </GuideSection>
                   </motion.div>
