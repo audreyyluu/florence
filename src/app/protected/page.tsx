@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CameraFeed } from "@/components/CameraFeed";
+import { CameraFeed } from "@/components/protected/CameraFeed";
 
 // Define status types to ensure type safety
 type PatientStatus = 'stable' | 'check' | 'urgent' | 'alerted';

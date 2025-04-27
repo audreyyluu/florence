@@ -34,7 +34,7 @@ import { motion } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Slider } from "@/components/ui/slider"
 import { Textarea } from "@/components/ui/textarea"
-import { CameraFeed } from "@/components/CameraFeed"
+import { CameraFeed } from "@/components/protected/CameraFeed"
 
 type DangerousBehavior = {
   id: string
