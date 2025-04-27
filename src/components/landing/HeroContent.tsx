@@ -2,32 +2,32 @@ import React from 'react';
 import { AuthButton } from '@/components/auth/AuthButton';
 import { Button } from '../ui/button';
 import { motion } from 'framer-motion';
-import { Eye, Shield, Bell, Activity } from 'lucide-react';
+import { Eye, Bell, Activity, MessageCircle } from 'lucide-react';
 
 export function HeroContent() {
   const features = [
     {
       icon: Eye,
-      title: "Real-time Monitoring",
+      title: "Real-Time Monitoring",
       description: "Monitor patient rooms in real-time with advanced video surveillance to ensure patient safety and proper care.",
       imageUrl: "https://picsum.photos/seed/monitoring/600/400"
     },
     {
-      icon: Activity,
+      icon: Bell,
       title: "Activity Detection",
       description: "Automatically detect potentially dangerous activities like falls, coughing, or distress using AI-powered analysis.",
       imageUrl: "https://picsum.photos/seed/activity/600/400"
     },
     {
-      icon: Bell,
-      title: "Instant Alerts",
-      description: "Receive immediate notifications when patients need attention, allowing for faster response times.",
+      icon: Activity,
+      title: "Vitals Accessibility",
+      description: "Displays patients' vitals and medical history for quick access and visibility.",
       imageUrl: "https://picsum.photos/seed/alerts/600/400"
     },
     {
-      icon: Shield,
-      title: "Secure Access",
-      description: "Hospital-grade security ensures that only authorized personnel can access surveillance footage.",
+      icon: MessageCircle,
+      title: "Convenient Communication",
+      description: "Chat with staff to notify them when patients need attention, allowing for quicker assistance.",
       imageUrl: "https://picsum.photos/seed/security/600/400"
     }
   ];
@@ -52,7 +52,7 @@ export function HeroContent() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter"
             >
-              Enhancing Patient Care with CareCam
+              Enhancing Patient Care with Florence
             </motion.h1>
             
             <motion.p 
@@ -61,7 +61,7 @@ export function HeroContent() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-lg sm:text-xl text-gray-600 max-w-xl"
             >
-              CareCam provides advanced surveillance solutions for hospitals, enabling medical staff to monitor patients remotely and respond quickly to emergencies.
+              Florence is an AI agent that provides advanced surveillance solutions for hospitals, enabling medical staff to monitor patients remotely and respond quickly to emergencies.
             </motion.p>
             
             <motion.div 

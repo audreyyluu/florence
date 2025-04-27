@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import Link from 'next/link';
+import Image from 'next/image'
 import { UserButton } from '../auth/UserButton';
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -97,8 +98,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Logo in Sidebar */}
         <div className="p-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-serif font-extrabold no-underline text-inherit block">
-            {logoName}
+          <Link href="/">
+            <Image alt="logo" src="/florence_logo.png" width={140} height={110}></Image>
           </Link>
           {/* Close button - Only visible on mobile */}
           {isMobile && !collapsed && (

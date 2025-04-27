@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { AuthButton } from '@/components/auth/AuthButton'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -19,10 +20,7 @@ export function Header() {
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-xl">CC</span>
-          </div>
-          <span className="text-2xl font-bold">CareCam</span>
+          <Image alt="logo" src="/florence_logo.png" width={140} height={110}></Image>
         </Link>
         <nav className="flex items-center gap-4">
           <AuthButton trigger={<Button size="lg">Dashboard</Button>} />
