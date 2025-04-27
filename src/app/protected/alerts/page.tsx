@@ -51,7 +51,7 @@ import { motion } from "framer-motion"
 
 // Types for alert data
 type AlertSeverity = 'low' | 'medium' | 'high'
-type AlertType = 'fall' | 'distress' | 'coughing' | 'movement' | 'breathing' | 'visitor'
+type AlertType = 'breathing' | 'heartrate' | 'fatigue' | 'movement' | 'bloodpressure' | 'edema' | 'anxiety'
 
 interface PatientAlert {
   id: string
@@ -67,44 +67,266 @@ interface PatientAlert {
   resolvedAt?: Date
 }
 
-// Mock data generator
-const generateMockAlerts = (count: number): PatientAlert[] => {
-  const alertTypes: AlertType[] = ['fall', 'distress', 'coughing', 'movement', 'breathing', 'visitor']
-  const severities: AlertSeverity[] = ['low', 'medium', 'high']
-  
-  return Array.from({ length: count }, (_, i) => {
-    const roomNumber = 100 + Math.floor(Math.random() * 20)
-    const patientId = `P${roomNumber}`
-    const resolved = Math.random() > 0.7
-    const timestamp = new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000))
-    
-    return {
-      id: `alert-${i}`,
-      patientId,
-      patientName: `Patient ${roomNumber}`,
-      roomNumber,
-      timestamp,
-      type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
-      severity: severities[Math.floor(Math.random() * severities.length)],
-      description: getAlertDescription(alertTypes[Math.floor(Math.random() * alertTypes.length)]),
-      resolved,
-      resolvedBy: resolved ? 'Dr. Smith' : undefined,
-      resolvedAt: resolved ? new Date(timestamp.getTime() + Math.floor(Math.random() * 60 * 60 * 1000)) : undefined
-    }
-  }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+interface PatientInfo {
+  full_name: string
+  diagnosis: string
+  age: number
+  pre_existing_conditions: string[]
 }
 
-// Helper function to get alert description
-const getAlertDescription = (type: AlertType): string => {
-  const descriptions = {
-    fall: 'Patient has fallen out of bed',
-    distress: 'Patient showing signs of distress',
-    coughing: 'Persistent coughing detected',
-    movement: 'Unusual movement detected',
-    breathing: 'Irregular breathing pattern',
-    visitor: 'Unauthorized visitor detected'
+interface TimelineInfo {
+  room_number: string
+  predicted_symptoms: string[]
+  timestamps: TimelineTimestamp[]
+  danger_level: string
+  description: string
+  vitals: {
+    heart_rate: number
+    blood_pressure: string
+    blood_oxygen: number
+    blood_glucose: number
+    temperature: number
+    respiratory_rate: number
+    pulse_rate: number
   }
-  return descriptions[type]
+}
+
+interface TimelineTimestamp {
+  start_time: string
+  end_time: string
+  symptoms: string[]
+  confidence: number
+  description: string
+  danger_level: string
+}
+
+// Function to generate real alerts based on patient data
+const generateRealAlerts = (): PatientAlert[] => {
+  // Patient data for rooms 100-108
+  const patientData: Record<number, PatientInfo> = {
+    100: {
+      full_name: "Drusilla Atherton",
+      diagnosis: "Congestive Heart Failure",
+      age: 58,
+      pre_existing_conditions: ["Hypertension", "Type 2 Diabetes", "Osteoarthritis"]
+    },
+    101: {
+      full_name: "Eleanor Ainsworth",
+      diagnosis: "Acute Heart Failure Exacerbation",
+      age: 72,
+      pre_existing_conditions: ["Hypertension", "Type 2 Diabetes", "Chronic Kidney Disease", "Atrial Fibrillation"]
+    },
+    102: {
+      full_name: "Jamal Thompson",
+      diagnosis: "Vaso-occlusive crisis due to Sickle Cell Anemia",
+      age: 10, 
+      pre_existing_conditions: ["Asthma", "Sickle Cell Anemia"]
+    },
+    103: {
+      full_name: "Thomas Abernathy",
+      diagnosis: "Acute Myocardial Infarction (Heart Attack)",
+      age: 62,
+      pre_existing_conditions: ["Hypertension", "Type 2 Diabetes", "Coronary Artery Disease", "COPD"]
+    },
+    104: {
+      full_name: "Maria Rodriguez",
+      diagnosis: "Community-Acquired Pneumonia",
+      age: 67,
+      pre_existing_conditions: ["COPD", "Hypertension"]
+    },
+    105: {
+      full_name: "Sarah Johnson",
+      diagnosis: "Severe Dehydration and Electrolyte Imbalance",
+      age: 35,
+      pre_existing_conditions: ["None"]
+    },
+    106: {
+      full_name: "Robert Chen",
+      diagnosis: "Post-Surgery Recovery (Hip Replacement)",
+      age: 71,
+      pre_existing_conditions: ["Osteoarthritis", "Hypertension"]
+    },
+    107: {
+      full_name: "Amira Hassan",
+      diagnosis: "Diabetic Ketoacidosis",
+      age: 24,
+      pre_existing_conditions: ["Type 1 Diabetes"]
+    },
+    108: {
+      full_name: "William Parker",
+      diagnosis: "Stroke (Ischemic)",
+      age: 68,
+      pre_existing_conditions: ["Hypertension", "Hyperlipidemia", "Atrial Fibrillation"]
+    }
+  };
+
+  // Generate alerts based on room data
+  const alerts: PatientAlert[] = [];
+  
+  // Room 100 - Drusilla Atherton
+  alerts.push({
+    id: "alert-100-1",
+    patientId: "P100",
+    patientName: patientData[100].full_name,
+    roomNumber: 100,
+    timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
+    type: "breathing",
+    severity: "medium",
+    description: "Patient experiencing shortness of breath, potential CHF exacerbation",
+    resolved: false
+  });
+  
+  alerts.push({
+    id: "alert-100-2",
+    patientId: "P100",
+    patientName: patientData[100].full_name,
+    roomNumber: 100,
+    timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
+    type: "edema",
+    severity: "medium",
+    description: "Edema in lower extremities observed, consistent with CHF",
+    resolved: true,
+    resolvedBy: "Dr. Smith",
+    resolvedAt: new Date(Date.now() - 2 * 60 * 60 * 1000)
+  });
+  
+  // Room 101 - Eleanor Ainsworth
+  alerts.push({
+    id: "alert-101-1",
+    patientId: "P101",
+    patientName: patientData[101].full_name,
+    roomNumber: 101,
+    timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
+    type: "heartrate",
+    severity: "high",
+    description: "Irregular heartbeat detected, potential atrial fibrillation event",
+    resolved: false
+  });
+  
+  alerts.push({
+    id: "alert-101-2",
+    patientId: "P101",
+    patientName: patientData[101].full_name,
+    roomNumber: 101,
+    timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+    type: "bloodpressure",
+    severity: "high",
+    description: "Blood pressure elevated to 160/90, requiring intervention",
+    resolved: true,
+    resolvedBy: "Dr. Johnson",
+    resolvedAt: new Date(Date.now() - 3.5 * 60 * 60 * 1000)
+  });
+  
+  // Room 102 - Jamal Thompson
+  alerts.push({
+    id: "alert-102-1",
+    patientId: "P102",
+    patientName: patientData[102].full_name,
+    roomNumber: 102,
+    timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
+    type: "breathing",
+    severity: "high",
+    description: "Breathing difficulties observed, potential asthma complication",
+    resolved: false
+  });
+  
+  // Room 103 - Thomas Abernathy
+  alerts.push({
+    id: "alert-103-1",
+    patientId: "P103",
+    patientName: patientData[103].full_name,
+    roomNumber: 103,
+    timestamp: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
+    type: "heartrate",
+    severity: "high",
+    description: "Abnormal heart rhythm detected post myocardial infarction",
+    resolved: false
+  });
+  
+  // Room 104 - Maria Rodriguez
+  alerts.push({
+    id: "alert-104-1",
+    patientId: "P104",
+    patientName: patientData[104].full_name,
+    roomNumber: 104,
+    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
+    type: "breathing",
+    severity: "medium",
+    description: "Increased respiratory rate, pneumonia-related complications",
+    resolved: true,
+    resolvedBy: "Dr. Patel",
+    resolvedAt: new Date(Date.now() - 4 * 60 * 60 * 1000)
+  });
+  
+  // Room 105 - Sarah Johnson
+  alerts.push({
+    id: "alert-105-1",
+    patientId: "P105",
+    patientName: patientData[105].full_name,
+    roomNumber: 105,
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+    type: "fatigue",
+    severity: "medium",
+    description: "Patient showing signs of extreme fatigue, electrolyte imbalance",
+    resolved: false
+  });
+  
+  // Room 106 - Robert Chen
+  alerts.push({
+    id: "alert-106-1",
+    patientId: "P106",
+    patientName: patientData[106].full_name,
+    roomNumber: 106,
+    timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8 hours ago
+    type: "movement",
+    severity: "low",
+    description: "Unusual movement detected, potential post-op mobility issue",
+    resolved: true,
+    resolvedBy: "Dr. Garcia",
+    resolvedAt: new Date(Date.now() - 7 * 60 * 60 * 1000)
+  });
+  
+  // Room 107 - Amira Hassan
+  alerts.push({
+    id: "alert-107-1",
+    patientId: "P107",
+    patientName: patientData[107].full_name,
+    roomNumber: 107,
+    timestamp: new Date(Date.now() - 25 * 60 * 1000), // 25 minutes ago
+    type: "bloodpressure",
+    severity: "high",
+    description: "Significant drop in blood pressure, DKA complication",
+    resolved: false
+  });
+  
+  // Room 108 - William Parker
+  alerts.push({
+    id: "alert-108-1",
+    patientId: "P108",
+    patientName: patientData[108].full_name,
+    roomNumber: 108,
+    timestamp: new Date(Date.now() - 1.5 * 60 * 60 * 1000), // 1.5 hours ago
+    type: "movement",
+    severity: "medium",
+    description: "Limited movement on left side, post-stroke monitoring",
+    resolved: false
+  });
+  
+  alerts.push({
+    id: "alert-108-2",
+    patientId: "P108",
+    patientName: patientData[108].full_name,
+    roomNumber: 108,
+    timestamp: new Date(Date.now() - 7 * 60 * 60 * 1000), // 7 hours ago
+    type: "anxiety",
+    severity: "low",
+    description: "Patient showing signs of anxiety and agitation",
+    resolved: true,
+    resolvedBy: "Dr. Wilson",
+    resolvedAt: new Date(Date.now() - 6 * 60 * 60 * 1000)
+  });
+  
+  return alerts.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 }
 
 // Helper function to format date
@@ -132,24 +354,26 @@ const getSeverityBadge = (severity: AlertSeverity) => {
 // Get alert type icon
 const getAlertTypeIcon = (type: AlertType) => {
   switch (type) {
-    case 'fall':
-      return <AlertTriangle className="h-4 w-4 text-red-500" />
-    case 'distress':
+    case 'breathing':
+      return <Activity className="h-4 w-4 text-red-500" />
+    case 'heartrate':
       return <Activity className="h-4 w-4 text-orange-500" />
-    case 'coughing':
+    case 'fatigue':
       return <Activity className="h-4 w-4 text-yellow-500" />
     case 'movement':
       return <Activity className="h-4 w-4 text-blue-500" />
-    case 'breathing':
+    case 'bloodpressure':
       return <Activity className="h-4 w-4 text-purple-500" />
-    case 'visitor':
+    case 'edema':
+      return <Activity className="h-4 w-4 text-indigo-500" />
+    case 'anxiety':
       return <User className="h-4 w-4 text-gray-500" />
   }
 }
 
 export default function AlertsHistoryPage() {
   const router = useRouter()
-  const [alerts] = useState<PatientAlert[]>(generateMockAlerts(50))
+  const [alerts] = useState<PatientAlert[]>(generateRealAlerts())
   const [filteredAlerts, setFilteredAlerts] = useState<PatientAlert[]>(alerts)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null)
@@ -382,6 +606,7 @@ export default function AlertsHistoryPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Room</TableHead>
+                  <TableHead>Patient</TableHead>
                   <TableHead>Alert Type</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Severity</TableHead>
@@ -396,6 +621,9 @@ export default function AlertsHistoryPage() {
                     <TableRow key={alert.id}>
                       <TableCell className="font-medium">
                         Room {alert.roomNumber}
+                      </TableCell>
+                      <TableCell>
+                        {alert.patientName}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -429,7 +657,7 @@ export default function AlertsHistoryPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
                       No alerts found matching your filters
                     </TableCell>
                   </TableRow>

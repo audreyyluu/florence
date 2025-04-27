@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import Link from 'next/link';
 import Image from 'next/image'
@@ -7,7 +7,7 @@ import { UserButton } from '../auth/UserButton';
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 // Define menu item interface
 export interface MenuItem {
@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   menuItems = defaultMenuItems, // Use default items if not provided
   logoName = "crack.diy", // Default page name if not provided
   pageTitle, // Page title shown in the navigation bar
-  currentPath = "", // Current path for highlighting active menu item
+  currentPath: propCurrentPath, // Current path from props
   userEmail = "", // User email
   userName = "" // User name
 }) => {
@@ -50,6 +50,19 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isMobile = useIsMobile();
   const { signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname(); // Get current path from router
+  
+  // Use pathname from router if currentPath prop is not provided
+  const currentPath = propCurrentPath || pathname || "";
+
+  // Prefetch all menu items for faster navigation
+  useEffect(() => {
+    menuItems.forEach(item => {
+      if (item.href !== currentPath && item.href.startsWith('/')) {
+        router.prefetch(item.href);
+      }
+    });
+  }, [menuItems, currentPath, router]);
 
   // Function to extract and format name from email
   const getNameFromEmail = (email: string): string => {
@@ -98,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Logo in Sidebar */}
         <div className="p-4 flex justify-between items-center">
-          <Link href="/">
+          <Link href="/" prefetch={true}>
             <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert"></Image>
           </Link>
           {/* Close button - Only visible on mobile */}
@@ -131,6 +144,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       <li key={index}>
                         <Link 
                           href={item.href}
+                          prefetch={true}
                           className={`flex items-center px-7 py-2 text-sm font-medium my-0.5 bg-transparent transition-all duration-200 ease-in justify-start text-left hover:text-foreground hover:bg-accent hover:border-r-accent-foreground hover:border-r-[3px] border-r-transparent ${
                             isActive 
                               ? 'text-foreground bg-accent border-r-accent-foreground border-r-[3px] font-semibold' 

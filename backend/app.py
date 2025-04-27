@@ -220,6 +220,50 @@ def chat_endpoint(request: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
+@app.get("/patientinfo/{room_number}", response_model=PatientInfo)
+def get_patient_info(room_number: str):
+    """Retrieve patient information for a specific room."""
+    try:
+        # Build file path
+        patient_info_path = f"patientinfo/room{room_number}.json"
+        
+        # Check if file exists
+        if not os.path.exists(patient_info_path):
+            raise HTTPException(status_code=404, detail=f"Patient info not found for room {room_number}")
+        
+        # Load and validate the data
+        with open(patient_info_path, 'r') as f:
+            patient_info_data = json.load(f)
+        patient_info = PatientInfo(**patient_info_data)
+        
+        return patient_info
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+@app.get("/timelineinfo/{room_number}", response_model=PatientTimestamp)
+def get_timeline_info(room_number: str):
+    """Retrieve timeline information for a specific room."""
+    try:
+        # Build file path
+        patient_timestamp_path = f"timelineinfo/room{room_number}.json"
+        
+        # Check if file exists
+        if not os.path.exists(patient_timestamp_path):
+            raise HTTPException(status_code=404, detail=f"Timeline info not found for room {room_number}")
+        
+        # Load and validate the data
+        with open(patient_timestamp_path, 'r') as f:
+            patient_timestamp_data = json.load(f)
+        patient_timestamp = PatientTimestamp(**patient_timestamp_data)
+        
+        return patient_timestamp
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True) 

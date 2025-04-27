@@ -62,9 +62,26 @@ interface RoomData {
 const generateMockRooms = (): RoomData[] => {
   const statuses: RoomStatus[] = ['stable', 'check', 'urgent', 'alerted']
   
+  // Front page room statuses for rooms 100-108
+  const frontPageRoomStatuses: Record<number, RoomStatus> = {
+    100: 'urgent',
+    101: 'check',
+    102: 'stable',
+    103: 'urgent',
+    104: 'urgent',
+    105: 'alerted',
+    106: 'urgent',
+    107: 'stable',
+    108: 'urgent'
+  }
+  
   return Array.from({ length: 18 }, (_, i) => {
     const roomNumber = 100 + i
-    const status = statuses[Math.floor(Math.random() * statuses.length)]
+    
+    // Use predefined status for rooms 100-108, random status for others
+    const status = roomNumber <= 108 
+      ? frontPageRoomStatuses[roomNumber] 
+      : statuses[Math.floor(Math.random() * statuses.length)]
     
     return {
       id: i + 1,
@@ -98,10 +115,10 @@ const formatTimeAgo = (date: Date): string => {
 
 const getStatusColor = (status: RoomStatus): string => {
   switch (status) {
-    case 'stable': return 'bg-green-100 dark:bg-green-900'
-    case 'check': return 'bg-yellow-100 dark:bg-yellow-900'
-    case 'urgent': return 'bg-red-100 dark:bg-red-900'
-    case 'alerted': return 'bg-blue-100 dark:bg-blue-900'
+    case 'stable': return 'bg-green-100'
+    case 'check': return 'bg-yellow-100'
+    case 'urgent': return 'bg-red-100'
+    case 'alerted': return 'bg-blue-100'
   }
 }
 
@@ -326,19 +343,19 @@ export default function HospitalMapPage() {
                 <div className="text-xs font-medium mb-1">Status Color Key</div>
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 bg-green-100 dark:bg-green-900 rounded-sm"></div>
+                    <div className="w-3 h-3 bg-green-100 rounded-sm"></div>
                     <span className="text-xs">Stable</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 bg-yellow-100 dark:bg-yellow-900 rounded-sm"></div>
+                    <div className="w-3 h-3 bg-yellow-100 rounded-sm"></div>
                     <span className="text-xs">Check on patient</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 bg-red-100 dark:bg-red-900 rounded-sm"></div>
+                    <div className="w-3 h-3 bg-red-100 rounded-sm"></div>
                     <span className="text-xs">Needs immediate attention</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 bg-blue-100 dark:bg-blue-900 rounded-sm"></div>
+                    <div className="w-3 h-3 bg-blue-100 rounded-sm"></div>
                     <span className="text-xs">Staff alerted</span>
                   </div>
                 </div>
@@ -367,12 +384,6 @@ export default function HospitalMapPage() {
                                   <div className="text-xs font-medium">{room.roomNumber}</div>
                                   {room.hasAlert && (
                                     <AlertTriangle className="h-3 w-3 text-red-500 mt-1" />
-                                  )}
-                                  {room.staffCount > 0 && (
-                                    <div className="flex items-center mt-1">
-                                      <User className="h-2 w-2" />
-                                      <span className="text-[10px]">{room.staffCount}</span>
-                                    </div>
                                   )}
                                 </motion.div>
                               </TooltipTrigger>

@@ -74,70 +74,156 @@ interface StaffMember {
 interface RoomStaffing {
   roomNumber: number
   patientName: string
-  patientCondition: 'stable' | 'needs_attention' | 'critical'
+  patientCondition: PatientStatus
   assignedStaff: string[] // IDs of assigned staff
   currentStaff: string[] // IDs of staff currently in room
   lastVisit: Date | null
   minimumStaffNeeded: number
 }
 
-// Mock data generator functions
-const generateMockStaff = (count: number): StaffMember[] => {
-  const roles: StaffRole[] = ['doctor', 'nurse', 'assistant', 'specialist']
-  const statuses: StaffStatus[] = ['active', 'break', 'off-duty']
-  const firstNames = ['John', 'Sarah', 'Michael', 'Emma', 'David', 'Lisa', 'Robert', 'Jennifer', 'William', 'Maria']
-  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Garcia', 'Rodriguez', 'Wilson']
-  
-  return Array.from({ length: count }, (_, i) => {
-    const role = roles[Math.floor(Math.random() * roles.length)]
-    const status = statuses[Math.floor(Math.random() * statuses.length)]
-    const currentRoom = status === 'active' ? 100 + Math.floor(Math.random() * 20) : null
-    const timeInRoom = currentRoom ? Math.floor(Math.random() * 60) : null
-    const assignedRooms = Array.from(
-      { length: Math.floor(Math.random() * 5) + 1 },
-      () => 100 + Math.floor(Math.random() * 20)
-    )
-    
-    return {
-      id: `staff-${i}`,
-      name: `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`,
-      role,
-      status,
-      currentRoom,
-      timeInRoom,
-      assignedRooms: [...new Set(assignedRooms)] // Remove duplicates
-    }
-  })
-}
+// Define status types to ensure type safety - copied from dashboard
+type PatientStatus = 'stable' | 'check' | 'urgent' | 'alerted';
 
-const generateMockRoomStaffing = (count: number, staff: StaffMember[]): RoomStaffing[] => {
-  const conditions = ['stable', 'needs_attention', 'critical'] as const
-  
-  return Array.from({ length: count }, (_, i) => {
-    const roomNumber = 100 + i
-    const assignedStaff = staff
-      .filter(s => s.assignedRooms.includes(roomNumber))
-      .map(s => s.id)
-    
-    const currentStaff = staff
-      .filter(s => s.currentRoom === roomNumber)
-      .map(s => s.id)
-    
-    const lastVisit = currentStaff.length > 0 
-      ? new Date(Date.now() - Math.floor(Math.random() * 60 * 60 * 1000)) 
-      : new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000))
-    
-    return {
-      roomNumber,
-      patientName: `Patient ${roomNumber}`,
-      patientCondition: conditions[Math.floor(Math.random() * conditions.length)],
-      assignedStaff,
-      currentStaff,
-      lastVisit,
-      minimumStaffNeeded: Math.floor(Math.random() * 2) + 1
-    }
-  })
-}
+// Status color mapping - copied from dashboard
+const statusColors: Record<PatientStatus, { color: string; label: string }> = {
+  stable: { color: 'bg-green-500', label: 'Stable' },
+  check: { color: 'bg-yellow-500', label: 'Check on patient' },
+  urgent: { color: 'bg-red-500', label: 'Needs immediate attention' },
+  alerted: { color: 'bg-blue-500', label: 'Staff alerted' },
+};
+
+// Replace mock data generator functions with static data
+const staticStaffData: StaffMember[] = [
+  {
+    id: 'staff-1',
+    name: 'Dr. James Miller',
+    role: 'doctor',
+    status: 'active',
+    currentRoom: 105,
+    timeInRoom: 15,
+    assignedRooms: [105]
+  },
+  {
+    id: 'staff-2',
+    name: 'Nurse Sarah Johnson',
+    role: 'nurse',
+    status: 'active',
+    currentRoom: 105,
+    timeInRoom: 25,
+    assignedRooms: [105]
+  },
+  {
+    id: 'staff-3',
+    name: 'Dr. Emily Chen',
+    role: 'doctor',
+    status: 'off-duty',
+    currentRoom: null,
+    timeInRoom: null,
+    assignedRooms: [100, 101, 102]
+  },
+  {
+    id: 'staff-4',
+    name: 'Nurse Michael Brown',
+    role: 'nurse',
+    status: 'break',
+    currentRoom: null,
+    timeInRoom: null,
+    assignedRooms: [103, 104]
+  },
+  {
+    id: 'staff-5',
+    name: 'Assistant Robert Wilson',
+    role: 'assistant',
+    status: 'off-duty',
+    currentRoom: null,
+    timeInRoom: null,
+    assignedRooms: [106, 107, 108]
+  }
+];
+
+const staticRoomData: RoomStaffing[] = [
+  {
+    roomNumber: 100,
+    patientName: 'Drusilla Atherton',
+    patientCondition: 'urgent',
+    assignedStaff: ['staff-3'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
+    minimumStaffNeeded: 1
+  },
+  {
+    roomNumber: 101,
+    patientName: 'Eleanor Ainsworth',
+    patientCondition: 'check',
+    assignedStaff: ['staff-3'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8 hours ago
+    minimumStaffNeeded: 1
+  },
+  {
+    roomNumber: 102,
+    patientName: 'Jamal Thompson',
+    patientCondition: 'stable',
+    assignedStaff: ['staff-3'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
+    minimumStaffNeeded: 1
+  },
+  {
+    roomNumber: 103,
+    patientName: 'Thomas Abernathy',
+    patientCondition: 'urgent',
+    assignedStaff: ['staff-4'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+    minimumStaffNeeded: 1
+  },
+  {
+    roomNumber: 104,
+    patientName: 'Aiko Tanaka',
+    patientCondition: 'urgent',
+    assignedStaff: ['staff-4'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
+    minimumStaffNeeded: 1
+  },
+  {
+    roomNumber: 105,
+    patientName: 'Lily Chen',
+    patientCondition: 'alerted',
+    assignedStaff: ['staff-1', 'staff-2'],
+    currentStaff: ['staff-1', 'staff-2'],
+    lastVisit: new Date(), // Now (staff currently in room)
+    minimumStaffNeeded: 2
+  },
+  {
+    roomNumber: 106,
+    patientName: 'Latoya Jackson',
+    patientCondition: 'urgent',
+    assignedStaff: ['staff-5'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 10 * 60 * 60 * 1000), // 10 hours ago
+    minimumStaffNeeded: 1
+  },
+  {
+    roomNumber: 107,
+    patientName: 'Mei Chen',
+    patientCondition: 'stable',
+    assignedStaff: ['staff-5'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 9 * 60 * 60 * 1000), // 9 hours ago
+    minimumStaffNeeded: 1
+  },
+  {
+    roomNumber: 108,
+    patientName: 'Daniel Peterson',
+    patientCondition: 'urgent',
+    assignedStaff: ['staff-5'],
+    currentStaff: [],
+    lastVisit: new Date(Date.now() - 11 * 60 * 60 * 1000), // 11 hours ago
+    minimumStaffNeeded: 1
+  }
+];
 
 // Helper function to format time
 const formatTimeAgo = (date: Date): string => {
@@ -182,28 +268,30 @@ const getStatusBadge = (status: StaffStatus) => {
   }
 }
 
-// Get condition badge
-const getConditionBadge = (condition: 'stable' | 'needs_attention' | 'critical') => {
+// Get condition badge - updated to match dashboard colors
+const getConditionBadge = (condition: PatientStatus) => {
   switch (condition) {
     case 'stable':
       return <Badge variant="outline" className="border-green-500 text-green-500">Stable</Badge>
-    case 'needs_attention':
-      return <Badge variant="outline" className="border-yellow-500 text-yellow-500">Needs Attention</Badge>
-    case 'critical':
-      return <Badge variant="outline" className="border-red-500 text-red-500">Critical</Badge>
+    case 'check':
+      return <Badge variant="outline" className="border-yellow-500 text-yellow-500">Check on patient</Badge>
+    case 'urgent':
+      return <Badge variant="outline" className="border-red-500 text-red-500">Needs immediate attention</Badge>
+    case 'alerted':
+      return <Badge variant="outline" className="border-blue-500 text-blue-500">Staff alerted</Badge>
   }
 }
 
 export default function StaffingPage() {
   const router = useRouter()
-  const [staff] = useState<StaffMember[]>(generateMockStaff(20))
-  const [rooms] = useState<RoomStaffing[]>(generateMockRoomStaffing(15, staff))
+  const [staff] = useState<StaffMember[]>(staticStaffData)
+  const [rooms] = useState<RoomStaffing[]>(staticRoomData)
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRole, setSelectedRole] = useState<StaffRole | 'all'>('all')
   const [selectedStatus, setSelectedStatus] = useState<StaffStatus | 'all'>('all')
-  const [selectedCondition, setSelectedCondition] = useState<'stable' | 'needs_attention' | 'critical' | 'all'>('all')
+  const [selectedCondition, setSelectedCondition] = useState<PatientStatus | 'all'>('all')
   const [showUnderstaffed, setShowUnderstaffed] = useState(false)
   
   // Filtered data
@@ -446,7 +534,7 @@ export default function StaffingPage() {
               
               <Select
                 value={selectedCondition}
-                onValueChange={(value) => setSelectedCondition(value as 'stable' | 'needs_attention' | 'critical' | 'all')}
+                onValueChange={(value) => setSelectedCondition(value as PatientStatus | 'all')}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Patient Condition" />
@@ -454,8 +542,9 @@ export default function StaffingPage() {
                 <SelectContent>
                   <SelectItem value="all">All Conditions</SelectItem>
                   <SelectItem value="stable">Stable</SelectItem>
-                  <SelectItem value="needs_attention">Needs Attention</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
+                  <SelectItem value="check">Check on patient</SelectItem>
+                  <SelectItem value="urgent">Needs immediate attention</SelectItem>
+                  <SelectItem value="alerted">Staff alerted</SelectItem>
                 </SelectContent>
               </Select>
               

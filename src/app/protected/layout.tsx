@@ -28,6 +28,17 @@ export default function ProtectedLayout({
   const router = useRouter();
   const pathname = usePathname();
 
+  // Prefetch all menu items for faster navigation
+  useEffect(() => {
+    if (isAuthenticated) {
+      protectedMenuItems.forEach(item => {
+        if (item.href !== pathname) {
+          router.prefetch(item.href);
+        }
+      });
+    }
+  }, [isAuthenticated, pathname, router]);
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push(`/auth?redirect=${encodeURIComponent(pathname)}`);

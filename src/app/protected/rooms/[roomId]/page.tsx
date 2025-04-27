@@ -65,6 +65,12 @@ type PatientInfo = {
   diagnosis: string
   allergies: string[]
   medications: string[]
+  closeContacts?: {
+    name: string
+    relationship: string
+    location: string
+    phone_number: string
+  }[]
 }
 
 type TimelineEvent = {
@@ -76,6 +82,48 @@ type TimelineEvent = {
 }
 
 type PatientStatus = 'stable' | 'check' | 'urgent' | 'alerted'
+
+type PatientTimestampData = {
+  room_number: string
+  predicted_symptoms: string[]
+  timestamps: {
+    start_time: string
+    end_time: string
+    symptoms: string[]
+    confidence: number
+    description: string
+    danger_level: string
+  }[]
+  danger_level: string
+  description: string
+  vitals: {
+    heart_rate: number
+    blood_pressure: string
+    blood_oxygen: number
+    blood_glucose: number
+    temperature: number
+    respiratory_rate: number
+    pulse_rate: number
+  }
+  admission_date: string
+}
+
+type PatientDataFromBackend = {
+  full_name: string
+  location: string
+  age: number
+  pre_existing_conditions: string[]
+  current_symptoms: string[]
+  diagnosis: string
+  allergies: string
+  medications: string[]
+  close_contacts: {
+    name: string
+    relationship: string
+    location: string
+    phone_number: string
+  }[]
+}
 
 const generateMockDangerousBehaviors = (count: number): DangerousBehavior[] => {
   const behaviors = ['Coughing', 'Falling', 'Heavy breathing', 'Distress', 'Rapid movement']
@@ -197,6 +245,158 @@ const generateMockTimelineEvents = (count: number, dangerousBehaviors: Dangerous
   return [...baseEvents, ...additionalEvents].sort((a, b) => a.position - b.position);
 }
 
+// Function to fetch patient data from the backend
+const fetchPatientData = async (roomId: string): Promise<PatientInfo | null> => {
+  try {
+    const response = await fetch(`http://localhost:8000/patientinfo/${roomId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch patient data');
+    }
+    
+    const data: PatientDataFromBackend = await response.json();
+    
+    return {
+      name: data.full_name,
+      age: data.age,
+      roomNumber: parseInt(roomId, 10),
+      admissionDate: new Date(), // This would ideally come from the backend
+      diagnosis: data.diagnosis,
+      allergies: data.allergies.split(',').map(a => a.trim()),
+      medications: data.medications,
+      closeContacts: data.close_contacts
+    };
+  } catch (error) {
+    console.error('Error fetching patient data:', error);
+    return null;
+  }
+};
+
+// Function to fetch timeline data from the backend
+const fetchTimelineData = async (roomId: string): Promise<PatientTimestampData | null> => {
+  try {
+    const response = await fetch(`http://localhost:8000/timelineinfo/${roomId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch timeline data');
+    }
+    
+    const data: PatientTimestampData = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching timeline data:', error);
+    return null;
+  }
+};
+
+// Function to convert timestamps to dangerous behaviors
+const timelineToDangerousBehaviors = (timeline: PatientTimestampData): DangerousBehavior[] => {
+  return timeline.timestamps.map((timestamp, index) => {
+    // Map danger level to severity
+    let severity: 'low' | 'medium' | 'high' = 'low';
+    if (timestamp.danger_level === 'Critical' || timestamp.danger_level === 'High') {
+      severity = 'high';
+    } else if (timestamp.danger_level === 'Moderate') {
+      severity = 'medium';
+    }
+    
+    // Use the first symptom as the type, or 'Unknown' if no symptoms
+    const type = timestamp.symptoms[0] || 'Unknown';
+    
+    // Parse the timestamp to a Date
+    const dateStr = timestamp.start_time;
+    const date = new Date();
+    const [timePart, amPm] = dateStr.split(' ');
+    const [hours, minutes] = timePart.split(':');
+    let hour = parseInt(hours, 10);
+    if (amPm === 'PM' && hour < 12) hour += 12;
+    if (amPm === 'AM' && hour === 12) hour = 0;
+    date.setHours(hour, parseInt(minutes, 10), 0);
+    
+    return {
+      id: `behavior-${index}`,
+      type,
+      timestamp: date,
+      severity
+    };
+  });
+};
+
+// Function to convert timestamps to activity events
+const timelineToActivityEvents = (timeline: PatientTimestampData): ActivityEvent[] => {
+  return timeline.timestamps.map((timestamp, index) => {
+    // Parse the timestamp to a Date
+    const dateStr = timestamp.start_time;
+    const date = new Date();
+    const [timePart, amPm] = dateStr.split(' ');
+    const [hours, minutes] = timePart.split(':');
+    let hour = parseInt(hours, 10);
+    if (amPm === 'PM' && hour < 12) hour += 12;
+    if (amPm === 'AM' && hour === 12) hour = 0;
+    date.setHours(hour, parseInt(minutes, 10), 0);
+    
+    return {
+      id: `activity-${index}`,
+      description: timestamp.description.split('.')[0] + '.', // Take first sentence
+      timestamp: date
+    };
+  }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+};
+
+// Function to convert timeline data to patient vitals
+const timelineToPatientVitals = (timeline: PatientTimestampData): PatientVitals => {
+  return {
+    heartRate: timeline.vitals.heart_rate,
+    bloodPressure: timeline.vitals.blood_pressure,
+    temperature: timeline.vitals.temperature,
+    respiratoryRate: timeline.vitals.respiratory_rate,
+    oxygenSaturation: timeline.vitals.blood_oxygen
+  };
+};
+
+// Function to convert timeline events to timeline events
+const timelineToTimelineEvents = (timeline: PatientTimestampData): TimelineEvent[] => {
+  return timeline.timestamps.map((timestamp, index) => {
+    // Map danger level to severity
+    let severity: 'low' | 'medium' | 'high' = 'low';
+    if (timestamp.danger_level === 'Critical' || timestamp.danger_level === 'High') {
+      severity = 'high';
+    } else if (timestamp.danger_level === 'Moderate') {
+      severity = 'medium';
+    }
+    
+    // Calculate position based on index (evenly distribute across the timeline)
+    const position = (index / (timeline.timestamps.length - 1)) * 100;
+    
+    // Parse the timestamp to a Date
+    const dateStr = timestamp.start_time;
+    const date = new Date();
+    const [timePart, amPm] = dateStr.split(' ');
+    const [hours, minutes] = timePart.split(':');
+    let hour = parseInt(hours, 10);
+    if (amPm === 'PM' && hour < 12) hour += 12;
+    if (amPm === 'AM' && hour === 12) hour = 0;
+    date.setHours(hour, parseInt(minutes, 10), 0);
+    
+    return {
+      id: `timeline-${index}`,
+      timestamp: date,
+      type: timestamp.symptoms[0] || 'Unknown',
+      severity,
+      position
+    };
+  });
+};
+
+// Helper function to summarize patient conditions based on detections and patient info
+const getPatientSummary = (behaviors: DangerousBehavior[], patientInfo: PatientInfo | null, timelineData: PatientTimestampData | null): string => {
+  if (!patientInfo || !timelineData) return '';
+  
+  // Get primary diagnosis and current symptoms
+  const diagnosis = patientInfo.diagnosis;
+  const symptoms = timelineData.predicted_symptoms.join(', ');
+  
+  return `${patientInfo.name} has ${diagnosis} with current symptoms: ${symptoms}. Patient requires monitoring for ${timelineData.danger_level.toLowerCase()} risk conditions.`;
+};
+
 export default function RoomPage({ params }: { params: { roomId: string } }) {
   const router = useRouter()
   const unwrappedParams = React.use(params as any) as { roomId: string }
@@ -208,22 +408,73 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   ])
   const [inputValue, setInputValue] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
   
-  const [dangerousBehaviors] = useState<DangerousBehavior[]>(generateMockDangerousBehaviors(Math.floor(Math.random() * 3) + 3))
-  const [activities] = useState<ActivityEvent[]>(generateMockActivities(10))
-  const [patientVitals] = useState<PatientVitals>(generateMockPatientVitals())
-  const [patientInfo, setPatientInfo] = useState<PatientInfo>(generateMockPatientInfo(roomId))
-  const [ecgData] = useState(generateEcgData())
+  const [patientInfo, setPatientInfo] = useState<PatientInfo | null>(null)
+  const [patientVitals, setPatientVitals] = useState<PatientVitals | null>(null)
+  const [dangerousBehaviors, setDangerousBehaviors] = useState<DangerousBehavior[]>([])
+  const [activities, setActivities] = useState<ActivityEvent[]>([])
+  const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([])
+  const [originalTimelineData, setOriginalTimelineData] = useState<PatientTimestampData | null>(null)
+  const [ecgData, setEcgData] = useState(generateEcgData())
   
   const [isEditing, setIsEditing] = useState(false)
-  const [editedDiagnosis, setEditedDiagnosis] = useState(patientInfo.diagnosis)
-  const [editedAllergies, setEditedAllergies] = useState(patientInfo.allergies.join(", "))
-  const [editedMedications, setEditedMedications] = useState(patientInfo.medications.join("\n"))
+  const [editedDiagnosis, setEditedDiagnosis] = useState('')
+  const [editedAllergies, setEditedAllergies] = useState('')
+  const [editedMedications, setEditedMedications] = useState('')
   
-  const [timelineEvents] = useState<TimelineEvent[]>(generateMockTimelineEvents(8, dangerousBehaviors))
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentPosition, setCurrentPosition] = useState(0)
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null)
+  
+  // ECG animation
+  useEffect(() => {
+    const animationInterval = setInterval(() => {
+      setEcgData(currentData => {
+        // Shift the data points to create scrolling effect
+        const newData = [...currentData.slice(1), currentData[0]];
+        
+        // Add some variability to the last point to make it more realistic
+        const lastPoint = newData[newData.length - 1];
+        const variability = (Math.random() - 0.5) * 5;
+        newData[newData.length - 1] = { 
+          ...lastPoint, 
+          y: lastPoint.y + variability 
+        };
+        
+        return newData;
+      });
+    }, 80); // Update every 80ms for smooth animation
+    
+    return () => clearInterval(animationInterval);
+  }, []);
+  
+  // Fetch patient data and timeline data
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch patient data
+      const patientData = await fetchPatientData(roomId);
+      if (patientData) {
+        setPatientInfo(patientData);
+        setEditedDiagnosis(patientData.diagnosis);
+        setEditedAllergies(patientData.allergies.join(", "));
+        setEditedMedications(patientData.medications.join("\n"));
+      }
+      
+      // Fetch timeline data
+      const timelineData = await fetchTimelineData(roomId);
+      if (timelineData) {
+        setDangerousBehaviors(timelineToDangerousBehaviors(timelineData));
+        setActivities(timelineToActivityEvents(timelineData));
+        setPatientVitals(timelineToPatientVitals(timelineData));
+        setTimelineEvents(timelineToTimelineEvents(timelineData));
+        // Store the original timeline data for use in the summary
+        setOriginalTimelineData(timelineData);
+      }
+    };
+    
+    fetchData();
+  }, [roomId]);
   
   const nearbyRooms = [
     roomNumber + 1,
@@ -231,9 +482,48 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     roomNumber + 3
   ]
   
+  // Add function to determine statuses for nearby rooms
+  const getNearbyRoomStatus = (roomNum: number): PatientStatus => {
+    // This is a simple algorithm to assign statuses
+    // In a real implementation, this would fetch actual statuses from an API
+    const statuses: PatientStatus[] = ['stable', 'check', 'urgent', 'alerted'];
+    return statuses[roomNum % statuses.length];
+  };
+  
+  // Function to scroll chat to bottom
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
+  // Enhanced scrolling effect - scroll when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Small delay to ensure DOM updates are complete
+    const timer = setTimeout(() => {
+      scrollToBottom();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [messages]);
+  
+  // Scroll to bottom when chat tab is selected
+  useEffect(() => {
+    const chatTab = document.querySelector('[data-state="active"][value="chat"]');
+    if (chatTab) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'data-state' && 
+              chatTab.getAttribute('data-state') === 'active') {
+            scrollToBottom();
+          }
+        });
+      });
+      
+      observer.observe(chatTab, { attributes: true });
+      return () => observer.disconnect();
+    }
+  }, []);
   
   const determineRoomStatus = (): PatientStatus => {
     if (dangerousBehaviors.some(b => b.severity === 'high')) return 'urgent';
@@ -296,6 +586,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     const userMessage = { text: inputValue, sender: 'user' as const, timestamp: new Date() }
     setMessages(prev => [...prev, userMessage])
     setInputValue("")
+    scrollToBottom();
     
     // Show loading state
     const loadingMessage = { text: "Thinking...", sender: 'bot' as const, timestamp: new Date() }
@@ -328,6 +619,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
         timestamp: new Date()
       }
       setMessages(prev => [...prev, botMessage])
+      scrollToBottom();
     } catch (error) {
       console.error('Error calling chat API:', error);
       
@@ -339,23 +631,28 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
         timestamp: new Date()
       }
       setMessages(prev => [...prev, errorMessage])
+      scrollToBottom();
     }
   }
   
   const handleSaveMedicalHistory = () => {
-    setPatientInfo(prev => ({
-      ...prev,
-      diagnosis: editedDiagnosis,
-      allergies: editedAllergies.split(',').map(a => a.trim()).filter(a => a),
-      medications: editedMedications.split('\n').map(m => m.trim()).filter(m => m)
-    }))
+    if (patientInfo) {
+      setPatientInfo(prev => ({
+        ...prev!,
+        diagnosis: editedDiagnosis,
+        allergies: editedAllergies.split(',').map(a => a.trim()).filter(a => a),
+        medications: editedMedications.split('\n').map(m => m.trim()).filter(m => m)
+      }))
+    }
     setIsEditing(false)
   }
   
   const handleCancelEdit = () => {
-    setEditedDiagnosis(patientInfo.diagnosis)
-    setEditedAllergies(patientInfo.allergies.join(", "))
-    setEditedMedications(patientInfo.medications.join("\n"))
+    if (patientInfo) {
+      setEditedDiagnosis(patientInfo.diagnosis)
+      setEditedAllergies(patientInfo.allergies.join(", "))
+      setEditedMedications(patientInfo.medications.join("\n"))
+    }
     setIsEditing(false)
   }
   
@@ -491,6 +788,8 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                     <CameraFeed 
                       roomNumber={room}
                       videoUrl={getVideoUrl(room)}
+                      showRoomInfo={true}
+                      status={getNearbyRoomStatus(room)}
                     />
                   </div>
                 ))}
@@ -530,8 +829,19 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
+                        {/* Patient Summary Section */}
+                        <div className="mb-3 text-sm border-b pb-2">
+                          <p>{getPatientSummary(dangerousBehaviors, patientInfo, originalTimelineData)}</p>
+                        </div>
                         <ul className="space-y-2">
-                          {dangerousBehaviors.map(behavior => (
+                          {/* Sort behaviors by severity: high -> medium -> low */}
+                          {dangerousBehaviors
+                            .slice()
+                            .sort((a, b) => {
+                              const severityOrder = { high: 0, medium: 1, low: 2 };
+                              return severityOrder[a.severity] - severityOrder[b.severity];
+                            })
+                            .map(behavior => (
                             <motion.li 
                               key={behavior.id}
                               initial={{ opacity: 0, x: -10 }}
@@ -609,7 +919,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                           />
                         </svg>
                         <div className="absolute bottom-2 right-2 text-green-500 text-xs">
-                          {patientVitals.heartRate} BPM
+                          {patientVitals?.heartRate} BPM
                         </div>
                       </div>
                     </CardContent>
@@ -623,23 +933,23 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
                           <p className="text-sm text-muted-foreground">Heart Rate</p>
-                          <p className="text-lg font-medium">{patientVitals.heartRate} <span className="text-sm text-muted-foreground">bpm</span></p>
+                          <p className="text-lg font-medium">{patientVitals?.heartRate} <span className="text-sm text-muted-foreground">bpm</span></p>
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-muted-foreground">Blood Pressure</p>
-                          <p className="text-lg font-medium">{patientVitals.bloodPressure} <span className="text-sm text-muted-foreground">mmHg</span></p>
+                          <p className="text-lg font-medium">{patientVitals?.bloodPressure} <span className="text-sm text-muted-foreground">mmHg</span></p>
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-muted-foreground">Temperature</p>
-                          <p className="text-lg font-medium">{patientVitals.temperature} <span className="text-sm text-muted-foreground">°C</span></p>
+                          <p className="text-lg font-medium">{patientVitals?.temperature} <span className="text-sm text-muted-foreground">°C</span></p>
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-muted-foreground">Respiratory Rate</p>
-                          <p className="text-lg font-medium">{patientVitals.respiratoryRate} <span className="text-sm text-muted-foreground">bpm</span></p>
+                          <p className="text-lg font-medium">{patientVitals?.respiratoryRate} <span className="text-sm text-muted-foreground">bpm</span></p>
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-muted-foreground">Oxygen Saturation</p>
-                          <p className="text-lg font-medium">{patientVitals.oxygenSaturation} <span className="text-sm text-muted-foreground">%</span></p>
+                          <p className="text-lg font-medium">{patientVitals?.oxygenSaturation} <span className="text-sm text-muted-foreground">%</span></p>
                         </div>
                       </div>
                     </CardContent>
@@ -684,19 +994,19 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
                             <p className="text-muted-foreground">Name</p>
-                            <p>{patientInfo.name}</p>
+                            <p>{patientInfo?.name || 'Unknown'}</p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Age</p>
-                            <p>{patientInfo.age}</p>
+                            <p>{patientInfo?.age || 'Unknown'}</p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Room</p>
-                            <p>{patientInfo.roomNumber}</p>
+                            <p>{patientInfo?.roomNumber || roomNumber}</p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Admission Date</p>
-                            <p>{patientInfo.admissionDate.toLocaleDateString()}</p>
+                            <p>{patientInfo?.admissionDate?.toLocaleDateString() || 'Unknown'}</p>
                           </div>
                         </div>
                       </div>
@@ -710,7 +1020,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                             className="w-full"
                           />
                         ) : (
-                          <p className="text-sm">{patientInfo.diagnosis}</p>
+                          <p className="text-sm">{patientInfo?.diagnosis || 'Unknown'}</p>
                         )}
                       </div>
                       
@@ -725,9 +1035,9 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                           />
                         ) : (
                           <div className="flex flex-wrap gap-1">
-                            {patientInfo.allergies.map((allergy, i) => (
+                            {patientInfo?.allergies.map((allergy, i) => (
                               <Badge key={i} variant="outline">{allergy}</Badge>
-                            ))}
+                            )) || <Badge variant="outline">No allergies</Badge>}
                           </div>
                         )}
                       </div>
@@ -744,12 +1054,27 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                           />
                         ) : (
                           <ul className="text-sm space-y-1">
-                            {patientInfo.medications.map((medication, i) => (
+                            {patientInfo?.medications.map((medication, i) => (
                               <li key={i}>{medication}</li>
-                            ))}
+                            )) || <li>No medications</li>}
                           </ul>
                         )}
                       </div>
+                      
+                      {patientInfo?.closeContacts && patientInfo.closeContacts.length > 0 && (
+                        <div>
+                          <h3 className="font-medium mb-1">Close Contacts</h3>
+                          <ul className="text-sm space-y-3">
+                            {patientInfo.closeContacts.map((contact, i) => (
+                              <li key={i} className="border-b pb-2 last:border-0">
+                                <div className="font-medium">{contact.name} <span className="font-normal">({contact.relationship})</span></div>
+                                <div>{contact.location}</div>
+                                <div>{contact.phone_number}</div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
@@ -758,8 +1083,9 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
             
             <TabsContent value="chat" className="h-[calc(100%-60px)] flex flex-col">
               <div className="flex-1 overflow-hidden flex flex-col">
-                <ScrollArea className="flex-1">
-                  <div className="space-y-4 p-2">
+                <ScrollArea className="flex-1 h-full">
+                  <div className="space-y-4 p-2 min-h-full flex flex-col justify-end" ref={chatContainerRef}>
+                    <div className="flex-1" />
                     {messages.map((message, i) => (
                       <div 
                         key={i} 
@@ -772,14 +1098,14 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                               : 'bg-muted'
                           }`}
                         >
-                          <p>{message.text}</p>
+                          <p className="whitespace-pre-wrap break-words">{message.text}</p>
                           <p className="text-xs opacity-70 mt-1">
                             {formatTimestamp(message.timestamp)}
                           </p>
                         </div>
                       </div>
                     ))}
-                    <div ref={messagesEndRef} />
+                    <div ref={messagesEndRef} className="h-1" />
                   </div>
                 </ScrollArea>
               </div>

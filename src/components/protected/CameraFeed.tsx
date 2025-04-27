@@ -1,15 +1,26 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Camera, User } from "lucide-react"
+import { Camera } from "lucide-react"
+
+// Define the types we need for status
+type PatientStatus = 'stable' | 'check' | 'urgent' | 'alerted'
 
 interface CameraFeedProps {
   roomNumber: number
   isMain?: boolean
   videoUrl?: string
+  showRoomInfo?: boolean
+  status?: PatientStatus
 }
 
-export function CameraFeed({ roomNumber, isMain = false, videoUrl }: CameraFeedProps) {
+export function CameraFeed({ 
+  roomNumber, 
+  isMain = false, 
+  videoUrl, 
+  showRoomInfo = false,
+  status 
+}: CameraFeedProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -52,9 +63,30 @@ export function CameraFeed({ roomNumber, isMain = false, videoUrl }: CameraFeedP
       }
     }
   }, [videoUrl, roomNumber])
+  
+  // Function to determine room status color based on actual status system
+  const getRoomStatusColor = (roomNumber: number, status?: PatientStatus): string => {
+    // Use provided status if available, otherwise determine based on room number
+    const roomStatus = status || determineStatusFromRoomNumber(roomNumber)
+    
+    // Return color based on status - matches the system used throughout the app
+    switch (roomStatus) {
+      case 'stable': return 'bg-green-500'
+      case 'check': return 'bg-yellow-500'
+      case 'urgent': return 'bg-red-500'
+      case 'alerted': return 'bg-blue-500'
+      default: return 'bg-gray-500'
+    }
+  }
+
+  // Temporary function to assign a status by room number if none is provided
+  const determineStatusFromRoomNumber = (roomNumber: number): PatientStatus => {
+    const statuses: PatientStatus[] = ['stable', 'check', 'urgent', 'alerted']
+    return statuses[roomNumber % statuses.length]
+  }
 
   return (
-    <div className={`relative ${isMain ? 'aspect-video' : 'aspect-video'} bg-gray-900 rounded-lg overflow-hidden`}>
+    <div className={`relative aspect-video bg-gray-900 rounded-lg overflow-hidden`}>
       {videoUrl ? (
         <>
           <video
@@ -86,19 +118,32 @@ export function CameraFeed({ roomNumber, isMain = false, videoUrl }: CameraFeedP
               </div>
             </div>
           )}
+          
+          {/* Only show room info when explicitly requested */}
+          {showRoomInfo && (
+            <div className="absolute top-2 left-2 z-10 flex items-center gap-2 bg-black/50 rounded px-2 py-1">
+              <div className={`w-4 h-4 rounded-full ${getRoomStatusColor(roomNumber, status)} ring-1 ring-white/30`}></div>
+              <div className="text-white text-xs font-medium">
+                Room {roomNumber}
+              </div>
+            </div>
+          )}
         </>
       ) : (
         <div className="absolute inset-0 flex items-center justify-center">
           <Camera className={`${isMain ? 'h-24 w-24' : 'h-16 w-16'} text-gray-700`} />
+          
+          {/* Only show room info when explicitly requested */}
+          {showRoomInfo && (
+            <div className="absolute top-2 left-2 z-10 flex items-center gap-2 bg-black/50 rounded px-2 py-1">
+              <div className={`w-4 h-4 rounded-full ${getRoomStatusColor(roomNumber, status)} ring-1 ring-white/30`}></div>
+              <div className="text-white text-xs font-medium">
+                Room {roomNumber}
+              </div>
+            </div>
+          )}
         </div>
       )}
-      {/* <div className="absolute top-2 left-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
-        Room {roomNumber}
-      </div>
-      <div className="absolute bottom-2 right-2 bg-black/50 px-2 py-1 rounded text-white text-xs flex items-center">
-        <User className="h-3 w-3 mr-1" />
-        <span>{Math.floor(Math.random() * 3) + 1}</span>
-      </div> */}
     </div>
   )
 } 

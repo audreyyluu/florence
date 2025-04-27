@@ -1,7 +1,7 @@
 "use client"
-import { useState } from "react";
+import { useState, Suspense, lazy, useEffect } from "react";
 import { Eye, Palette, User, AlertTriangle, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -32,19 +32,24 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CameraFeed } from "@/components/protected/CameraFeed";
+import { prefetchDashboardPages, prefetchNextPageData } from "@/utils/prefetch";
+
+// Lazy load less critical components
+const CameraFeed = lazy(() => import("@/components/protected/CameraFeed").then(mod => ({ default: mod.CameraFeed })));
+
+// Loading fallback
+const LoadingCard = () => (
+  <Card className="overflow-hidden relative animate-pulse">
+    <div className="aspect-video bg-gray-800 rounded-lg"></div>
+    <CardFooter className="flex justify-between py-2">
+      <div className="h-5 w-20 bg-gray-700 rounded"></div>
+      <div className="h-5 w-10 bg-gray-700 rounded"></div>
+    </CardFooter>
+  </Card>
+);
 
 // Define status types to ensure type safety
 type PatientStatus = 'stable' | 'check' | 'urgent' | 'alerted';
-
-// Sample data for camera feeds
-const cameraFeeds = Array.from({ length: 18 }, (_, i) => ({
-  id: i + 1,
-  roomNumber: 100 + i,
-  status: ['stable', 'check', 'urgent', 'alerted'][Math.floor(Math.random() * 4)] as PatientStatus,
-  medicalProfessionals: Math.floor(Math.random() * 4),
-  videoUrl: i < 9 ? `/videos/room${100 + i}.webm` : undefined, 
-}));
 
 // Status color mapping
 const statusColors: Record<PatientStatus, { color: string; label: string }> = {
@@ -54,22 +59,91 @@ const statusColors: Record<PatientStatus, { color: string; label: string }> = {
   alerted: { color: 'bg-blue-500', label: 'Staff alerted' },
 };
 
+// Status priority order for sorting (highest priority first)
+const statusPriority: Record<PatientStatus, number> = {
+  urgent: 1,   // Red - highest priority
+  check: 2,    // Yellow
+  alerted: 3,  // Blue
+  stable: 4,   // Green - lowest priority
+};
+
+// Sample data for camera feeds
+const cameraFeeds = [
+  { id: 1, roomNumber: 100, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room100.webm` },
+  { id: 2, roomNumber: 101, status: 'check' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room101.webm` },
+  { id: 3, roomNumber: 102, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room102.webm` },
+  { id: 4, roomNumber: 103, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room103.webm` },
+  { id: 5, roomNumber: 104, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room104.webm` },
+  { id: 6, roomNumber: 105, status: 'alerted' as PatientStatus, medicalProfessionals: 3, videoUrl: `/videos/room105.webm` },
+  { id: 7, roomNumber: 106, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room106.webm` },
+  { id: 8, roomNumber: 107, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room107.webm` },
+  { id: 9, roomNumber: 108, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room108.webm` },
+  ...Array.from({ length: 9 }, (_, i) => ({
+    id: i + 10,
+    roomNumber: 109 + i,
+    status: ['stable', 'check', 'urgent', 'alerted'][Math.floor(Math.random() * 4)] as PatientStatus,
+    medicalProfessionals: 1,
+    videoUrl: undefined,
+  }))
+];
+
 export default function ProtectedPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [surveillanceOperators] = useState(Math.floor(Math.random() * 5) + 3);
   const [showColorKey, setShowColorKey] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [newCameraIp, setNewCameraIp] = useState("");
   const [newRoomNumber, setNewRoomNumber] = useState("");
   const [showAddCamera, setShowAddCamera] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   
   // Display 9 videos per page
   const videosPerPage = 9;
   const totalPages = Math.ceil(cameraFeeds.length / videosPerPage);
-  const currentFeeds = cameraFeeds.slice(
+  
+  // Separate feeds with and without video streaming
+  const streamingFeeds = cameraFeeds.filter(feed => feed.videoUrl);
+  const nonStreamingFeeds = cameraFeeds.filter(feed => !feed.videoUrl);
+  
+  // Sort only the streaming feeds by status priority
+  const sortedStreamingFeeds = [...streamingFeeds].sort((a, b) => 
+    statusPriority[a.status] - statusPriority[b.status]
+  );
+  
+  // Combine sorted streaming feeds with unsorted non-streaming feeds
+  const sortedCameraFeeds = [...sortedStreamingFeeds, ...nonStreamingFeeds];
+  
+  const currentFeeds = sortedCameraFeeds.slice(
     currentPage * videosPerPage, 
     (currentPage + 1) * videosPerPage
   );
+
+  // Effect to set loaded state and prefetch
+  useEffect(() => {
+    setIsLoaded(true);
+    
+    // Prefetch dashboard pages
+    prefetchDashboardPages(router, pathname || '');
+    
+    // Prefetch next page of rooms
+    prefetchNextPageData(
+      router, 
+      currentPage, 
+      videosPerPage, 
+      sortedCameraFeeds, 
+      (feed) => `/protected/rooms/${feed.roomNumber}`
+    );
+  }, [currentPage, pathname, router, sortedCameraFeeds, videosPerPage]);
+
+  // Prefetch when changing pages
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleRoomClick = (roomNumber: number) => {
+    router.push(`/protected/rooms/${roomNumber}`);
+  };
 
   const handleAddCamera = () => {
     // In a real app, this would add the camera to the database
@@ -124,23 +198,27 @@ export default function ProtectedPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {currentFeeds.map((feed) => (
-          <Card 
-            key={feed.id} 
-            className="overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary transition-all"
-            onClick={() => router.push(`/protected/rooms/${feed.roomNumber}`)}
-          >
-            <CameraFeed 
-              roomNumber={feed.roomNumber} 
-              videoUrl={feed.videoUrl}
-            />
-            <CardFooter className="flex justify-between py-2">
-              <div className="font-medium">Room {feed.roomNumber}</div>
-              <div className="flex items-center gap-1.5">
-                <User className="h-4 w-4" />
-                <span>{feed.medicalProfessionals}</span>
-              </div>
-            </CardFooter>
-          </Card>
+          <Suspense key={feed.id} fallback={<LoadingCard />}>
+            <Card 
+              className="overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary transition-all relative"
+              onClick={() => handleRoomClick(feed.roomNumber)}
+            >
+              {/* Status indicator dot */}
+              <div className={`absolute top-2 left-2 z-10 w-3 h-3 rounded-full ${statusColors[feed.status].color}`}></div>
+              
+              <CameraFeed 
+                roomNumber={feed.roomNumber} 
+                videoUrl={feed.videoUrl}
+              />
+              <CardFooter className="flex justify-between py-2">
+                <div className="font-medium">Room {feed.roomNumber}</div>
+                <div className="flex items-center gap-1.5">
+                  <User className="h-4 w-4" />
+                  <span>{feed.medicalProfessionals}</span>
+                </div>
+              </CardFooter>
+            </Card>
+          </Suspense>
         ))}
       </div>
 
@@ -151,7 +229,7 @@ export default function ProtectedPage() {
               key={i}
               variant={currentPage === i ? "default" : "outline"}
               size="sm"
-              onClick={() => setCurrentPage(i)}
+              onClick={() => handlePageChange(i)}
             >
               {i + 1}
             </Button>

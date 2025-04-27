@@ -19,22 +19,22 @@ export function HeroContent() {
       imagePath: "home/activity.png"
     },
     {
-      icon: Activity,
-      title: "Vitals Accessibility",
-      description: "Displays patients' vitals and medical history for quick access and visibility.",
-      imagePath: "home/vitals.png"
-    },
-    {
       icon: MessageCircle,
       title: "Convenient Communication",
       description: "Chat with healthcare staff to notify them when patients need attention, allowing for quicker assistance.",
       imagePath: "home/chat.png"
+    },
+    {
+      icon: Activity,
+      title: "Vitals Accessibility",
+      description: "Displays patients' vitals and medical history for quick access and visibility.",
+      imagePath: "home/vitals.png"
     }
   ];
 
   return (
     <div className="flex flex-col items-center justify-between min-h-[500px] pt-8 px-4 sm:px-6 lg:px-8 gap-8">
-      <div className="flex flex-col items-center justify-center w-full gap-8 mb-16 h-[85vh] py-0">
+      <div className="flex flex-col items-center justify-center w-full gap-8 mb-16 min-h-screen pb-20">
         <div className="flex flex-col lg:flex-row">
           <div className="lg:w-1/2 w-full max-w-4xl mx-auto lg:mx-0 space-y-6 text-center lg:text-left">
             <motion.div 
@@ -61,7 +61,7 @@ export function HeroContent() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-lg sm:text-xl text-gray-600 max-w-xl"
             >
-              Florence is an AI agent that provides advanced surveillance solutions for hospitals, enabling medical staff to monitor patients remotely and respond quickly to emergencies.
+              Florence is an AI agent that provides an advanced surveillance solutions for hospitals, enabling medical personnel to monitor patients remotely and respond quickly to emergencies.
             </motion.p>
             
             <motion.div 
@@ -79,13 +79,12 @@ export function HeroContent() {
           transition={{ duration: 1, delay: 0.8 }}
           className="lg:w-1/2 w-full mt-8 lg:mt-0 rounded-lg overflow-hidden shadow-lg"
           >
-            <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20"></div>
-              <div className="flex flex-col items-center justify-center z-10">
-              <Eye className="h-16 w-16 text-blue-400 mb-4" />
-              <p className="text-white text-lg">Video Surveillance Demo</p>
-              <p className="text-gray-400 text-sm mt-2">Live monitoring of patient rooms</p>
-              </div>
+            <div className="relative">
+              <img 
+                src="/home/dashboard.png" 
+                alt="Dashboard preview" 
+                className="w-full h-auto object-contain max-h-[60vh]"
+              />
             </div>
           </motion.div>
         </div>
