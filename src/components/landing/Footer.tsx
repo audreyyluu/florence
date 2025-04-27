@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="flex justify-center mb-4">
           <Link href="/" className="flex items-center gap-2">
-            <Image alt="logo" src="/florence_logo.png" width={140} height={110}></Image>
+            <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert"></Image>
           </Link>
         </div>
         <p className="text-center text-sm text-foreground/50">

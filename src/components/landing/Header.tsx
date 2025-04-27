@@ -20,7 +20,7 @@ export function Header() {
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <Image alt="logo" src="/florence_logo.png" width={140} height={110}></Image>
+          <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert"></Image>
         </Link>
         <nav className="flex items-center gap-4">
           <AuthButton trigger={<Button size="lg">Dashboard</Button>} />

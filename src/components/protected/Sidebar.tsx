@@ -99,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* Logo in Sidebar */}
         <div className="p-4 flex justify-between items-center">
           <Link href="/">
-            <Image alt="logo" src="/florence_logo.png" width={140} height={110}></Image>
+            <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert"></Image>
           </Link>
           {/* Close button - Only visible on mobile */}
           {isMobile && !collapsed && (
