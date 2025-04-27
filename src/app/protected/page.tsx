@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import { Camera, Eye, Palette, User, AlertTriangle, Plus } from "lucide-react";
+import { Eye, Palette, User, AlertTriangle, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CameraFeed } from "@/components/CameraFeed";
 
 // Define status types to ensure type safety
 type PatientStatus = 'stable' | 'check' | 'urgent' | 'alerted';
@@ -42,6 +43,7 @@ const cameraFeeds = Array.from({ length: 18 }, (_, i) => ({
   roomNumber: 100 + i,
   status: ['stable', 'check', 'urgent', 'alerted'][Math.floor(Math.random() * 4)] as PatientStatus,
   medicalProfessionals: Math.floor(Math.random() * 4),
+  videoUrl: i < 9 ? `/videos/room${100 + i}.webm` : undefined, 
 }));
 
 // Status color mapping
@@ -127,12 +129,10 @@ export default function ProtectedPage() {
             className="overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary transition-all"
             onClick={() => router.push(`/protected/rooms/${feed.roomNumber}`)}
           >
-            <div className="relative aspect-video bg-gray-900 flex items-center justify-center">
-              <Camera className="h-16 w-16 text-gray-700" />
-              <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                <div className={`w-3 h-3 rounded-full ${statusColors[feed.status].color}`}></div>
-              </div>
-            </div>
+            <CameraFeed 
+              roomNumber={feed.roomNumber} 
+              videoUrl={feed.videoUrl}
+            />
             <CardFooter className="flex justify-between py-2">
               <div className="font-medium">Room {feed.roomNumber}</div>
               <div className="flex items-center gap-1.5">
@@ -145,36 +145,17 @@ export default function ProtectedPage() {
       </div>
 
       {totalPages > 1 && (
-        <div className="flex justify-center mt-6 gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
-            disabled={currentPage === 0}
-          >
-            Previous
-          </Button>
-          <div className="flex items-center gap-1 px-2">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <Button 
-                key={i}
-                variant={currentPage === i ? "default" : "outline"}
-                size="sm"
-                className="w-8 h-8 p-0"
-                onClick={() => setCurrentPage(i)}
-              >
-                {i + 1}
-              </Button>
-            ))}
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
-            disabled={currentPage === totalPages - 1}
-          >
-            Next
-          </Button>
+        <div className="flex justify-center gap-2 mt-6">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <Button
+              key={i}
+              variant={currentPage === i ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCurrentPage(i)}
+            >
+              {i + 1}
+            </Button>
+          ))}
         </div>
       )}
 

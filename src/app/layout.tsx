@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import { AppStateProvider } from '@/contexts/AppStateContext'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +34,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <ConvexClientProvider>{children}</ConvexClientProvider>
-        </ThemeProvider>
+        <AppStateProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ConvexClientProvider>{children}</ConvexClientProvider>
+          </ThemeProvider>
+        </AppStateProvider>
       </body>
     </html>
   );

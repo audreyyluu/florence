@@ -34,6 +34,7 @@ import { motion } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Slider } from "@/components/ui/slider"
 import { Textarea } from "@/components/ui/textarea"
+import { CameraFeed } from "@/components/CameraFeed"
 
 type DangerousBehavior = {
   id: string
@@ -163,23 +164,6 @@ const generateEcgData = () => {
     return { x: i, y: y + 50 };
   });
 };
-
-const CameraFeed = ({ roomNumber, isMain = false }: { roomNumber: number, isMain?: boolean }) => {
-  return (
-    <div className={`relative ${isMain ? 'aspect-video' : 'aspect-video'} bg-gray-900 rounded-lg overflow-hidden`}>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Camera className={`${isMain ? 'h-24 w-24' : 'h-16 w-16'} text-gray-700`} />
-      </div>
-      <div className="absolute top-2 left-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
-        Room {roomNumber}
-      </div>
-      <div className="absolute bottom-2 right-2 bg-black/50 px-2 py-1 rounded text-white text-xs flex items-center">
-        <User className="h-3 w-3 mr-1" />
-        <span>{Math.floor(Math.random() * 3) + 1}</span>
-      </div>
-    </div>
-  )
-}
 
 const formatTimestamp = (date: Date): string => {
   return new Intl.DateTimeFormat('en-US', {
@@ -347,6 +331,10 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     setIsEditing(false)
   }
   
+  const getVideoUrl = (roomNum: number) => {
+    return roomNum >= 100 && roomNum <= 109 ? `/videos/room${roomNum}.webm` : undefined
+  }
+  
   return (
     <div className="container h-[calc(100vh-80px)] py-4">
       <div className="flex items-center gap-4 mb-4">
@@ -369,7 +357,11 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
           <ScrollArea className="h-full">
             <div className="flex flex-col gap-4 p-2">
               <div className="flex-1 relative">
-                <CameraFeed roomNumber={roomNumber} isMain={true} />
+                <CameraFeed 
+                  roomNumber={roomNumber} 
+                  isMain={true}
+                  videoUrl={getVideoUrl(roomNumber)}
+                />
                 
                 {selectedEvent && (
                   <div className="absolute bottom-4 left-4 bg-black/70 p-2 rounded text-white text-sm">
@@ -468,7 +460,10 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
               <div className="grid grid-cols-3 gap-4">
                 {nearbyRooms.map(room => (
                   <div key={room} className="cursor-pointer" onClick={() => router.push(`/protected/rooms/${room}`)}>
-                    <CameraFeed roomNumber={room} />
+                    <CameraFeed 
+                      roomNumber={room}
+                      videoUrl={getVideoUrl(room)}
+                    />
                   </div>
                 ))}
               </div>
@@ -482,15 +477,15 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
           <Tabs defaultValue="activity" className="h-full">
             <TabsList className="grid grid-cols-3 mb-4">
               <TabsTrigger value="activity" className="flex items-center gap-2">
-                <Bell className="h-4 w-4" />
+                <Activity className="h-4 w-4" />
                 <span className="hidden sm:inline">Activity</span>
               </TabsTrigger>
               <TabsTrigger value="vitals" className="flex items-center gap-2">
-                <Activity className="h-4 w-4" />
+                <Heart className="h-4 w-4" />
                 <span className="hidden sm:inline">Vitals</span>
               </TabsTrigger>
               <TabsTrigger value="chat" className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" />
+                <MessageSquare className="h-4 w-4" />
                 <span className="hidden sm:inline">Chat</span>
               </TabsTrigger>
             </TabsList>
