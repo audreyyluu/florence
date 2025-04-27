@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CareCam Hospital Surveillance",
+  title: "Florence",
   description: "Advanced monitoring solutions for healthcare environments",
   icons: {
     icon: "/favicon_crack_light.png",
