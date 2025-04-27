@@ -125,9 +125,6 @@ export function HeroContent() {
           <h2 className="text-2xl font-bold">{feature.title}</h2>
           </div>
           <p className="text-lg text-gray-600">{feature.description}</p>
-          <Button variant="link" className="p-0 text-blue-600 hover:text-blue-800">
-          Learn more <span aria-hidden="true">→</span>
-          </Button>
         </div>
         </motion.div>
       ))}
