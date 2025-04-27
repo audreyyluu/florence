@@ -92,13 +92,13 @@ export function CameraFeed({ roomNumber, isMain = false, videoUrl }: CameraFeedP
           <Camera className={`${isMain ? 'h-24 w-24' : 'h-16 w-16'} text-gray-700`} />
         </div>
       )}
-      <div className="absolute top-2 left-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
+      {/* <div className="absolute top-2 left-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
         Room {roomNumber}
       </div>
       <div className="absolute bottom-2 right-2 bg-black/50 px-2 py-1 rounded text-white text-xs flex items-center">
         <User className="h-3 w-3 mr-1" />
         <span>{Math.floor(Math.random() * 3) + 1}</span>
-      </div>
+      </div> */}
     </div>
   )
 } 
