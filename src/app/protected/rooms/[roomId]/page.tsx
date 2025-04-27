@@ -6,7 +6,9 @@ import React from "react"
 import { 
   ArrowLeft, 
   Camera, 
+  Bell,
   Activity, 
+  MessageCircle,
   Heart, 
   MessageSquare, 
   AlertTriangle,
@@ -480,15 +482,15 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
           <Tabs defaultValue="activity" className="h-full">
             <TabsList className="grid grid-cols-3 mb-4">
               <TabsTrigger value="activity" className="flex items-center gap-2">
-                <Activity className="h-4 w-4" />
+                <Bell className="h-4 w-4" />
                 <span className="hidden sm:inline">Activity</span>
               </TabsTrigger>
               <TabsTrigger value="vitals" className="flex items-center gap-2">
-                <Heart className="h-4 w-4" />
+                <Activity className="h-4 w-4" />
                 <span className="hidden sm:inline">Vitals</span>
               </TabsTrigger>
               <TabsTrigger value="chat" className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" />
+                <MessageCircle className="h-4 w-4" />
                 <span className="hidden sm:inline">Chat</span>
               </TabsTrigger>
             </TabsList>
