@@ -185,8 +185,6 @@ export default function SettingsPage() {
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="display">Display</TabsTrigger>
           </TabsList>
           
           {/* Account Settings */}
@@ -345,82 +343,6 @@ export default function SettingsPage() {
                         Button
                       </div>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="notifications">
-            <Card>
-              <CardHeader>
-                <CardTitle>Notification Preferences</CardTitle>
-                <CardDescription>
-                  Configure how you want to receive notifications
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col space-y-1">
-                    <Label htmlFor="notifications">Enable Notifications</Label>
-                    <span className="text-sm text-muted-foreground">
-                      Receive alerts about patient status changes
-                    </span>
-                  </div>
-                  <Switch
-                    id="notifications"
-                    checked={state.userPreferences.showNotifications}
-                    onCheckedChange={handleNotificationChange}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="display">
-            <Card>
-              <CardHeader>
-                <CardTitle>Display Settings</CardTitle>
-                <CardDescription>
-                  Customize how content is displayed
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div>
-                    <Label>Default View</Label>
-                    <Select
-                      value={state.userPreferences.defaultView}
-                      onValueChange={handleDefaultViewChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select view" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="grid">Grid</SelectItem>
-                        <SelectItem value="list">List</SelectItem>
-                        <SelectItem value="map">Map</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>Default Zoom Level</Label>
-                    <Select
-                      value={state.userPreferences.zoomLevel.toString()}
-                      onValueChange={(value) => handleZoomLevelChange(Number(value))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select zoom level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0.5">50%</SelectItem>
-                        <SelectItem value="0.75">75%</SelectItem>
-                        <SelectItem value="1">100%</SelectItem>
-                        <SelectItem value="1.25">125%</SelectItem>
-                        <SelectItem value="1.5">150%</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
               </CardContent>
