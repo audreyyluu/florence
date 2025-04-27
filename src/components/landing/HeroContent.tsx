@@ -27,7 +27,7 @@ export function HeroContent() {
     {
       icon: MessageCircle,
       title: "Convenient Communication",
-      description: "Chat with staff to notify them when patients need attention, allowing for quicker assistance.",
+      description: "Chat with healthcare staff to notify them when patients need attention, allowing for quicker assistance.",
       imageUrl: "https://picsum.photos/seed/security/600/400"
     }
   ];
