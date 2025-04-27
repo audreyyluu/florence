@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 .next/
 node_modules/
-=======
-node_modules/
-.next/
->>>>>>> 003626656b4f99b2bbc042074a690b6b61852d3b
 .env.local
+.DS_Store
