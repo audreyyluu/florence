@@ -78,9 +78,10 @@ const cameraFeeds = [
   { id: 7, roomNumber: 106, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room106.webm` },
   { id: 8, roomNumber: 107, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room107.webm` },
   { id: 9, roomNumber: 108, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room108.webm` },
-  ...Array.from({ length: 9 }, (_, i) => ({
-    id: i + 10,
-    roomNumber: 109 + i,
+  { id: 10, roomNumber: 109, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room109.webm` },
+  ...Array.from({ length: 8 }, (_, i) => ({
+    id: i + 11,
+    roomNumber: 110 + i,
     status: ['stable', 'check', 'urgent', 'alerted'][Math.floor(Math.random() * 4)] as PatientStatus,
     medicalProfessionals: 1,
     videoUrl: undefined,

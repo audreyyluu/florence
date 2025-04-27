@@ -484,6 +484,9 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   
   // Add function to determine statuses for nearby rooms
   const getNearbyRoomStatus = (roomNum: number): PatientStatus => {
+    // Explicitly set room 109 to have stable status
+    if (roomNum === 109) return 'stable';
+    
     // This is a simple algorithm to assign statuses
     // In a real implementation, this would fetch actual statuses from an API
     const statuses: PatientStatus[] = ['stable', 'check', 'urgent', 'alerted'];

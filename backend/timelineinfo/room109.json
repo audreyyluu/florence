@@ -1,0 +1,75 @@
+{
+  "room_number": "Room 217 - Bed 2",
+  "predicted_symptoms": [
+    "Mild Shortness of Breath",
+    "Light Fatigue",
+    "Slightly Elevated Respiratory Rate"
+  ],
+  "timestamps": [
+    {
+      "start_time": "06:15 AM",
+      "end_time": "06:20 AM",
+      "symptoms": [
+        "Mild Shortness of Breath",
+        "Mild Anxiety"
+      ],
+      "confidence": 0.70,
+      "description": "At 06:15 AM, Walter Schmidt appears mildly restless, lying awake but calm. His respiratory rate is slightly elevated, but there are no signs of major distress. He occasionally shifts in bed and looks thoughtful but not overtly anxious.",
+      "danger_level": "Low"
+    },
+    {
+      "start_time": "07:00 AM",
+      "end_time": "07:10 AM",
+      "symptoms": [
+        "Mild Shortness of Breath",
+        "Light Fatigue"
+      ],
+      "confidence": 0.65,
+      "description": "Between 07:00 and 07:10 AM, Mr. Schmidt shows mild shortness of breath after some light movement. His breathing is slightly faster but returns to baseline with rest. He appears a bit tired but otherwise stable.",
+      "danger_level": "Low"
+    },
+    {
+      "start_time": "08:30 AM",
+      "end_time": "08:40 AM",
+      "symptoms": [
+        "Restlessness",
+        "Dry Cough"
+      ],
+      "confidence": 0.60,
+      "description": "Around 08:30 AM, Walter coughs a few times without any mucus. He shifts positions a few times but settles afterward. Mild shortness of breath is observed, consistent with his mild asthma.",
+      "danger_level": "Low"
+    },
+    {
+      "start_time": "09:15 AM",
+      "end_time": "09:25 AM",
+      "symptoms": [
+        "Mild Shortness of Breath"
+      ],
+      "confidence": 0.65,
+      "description": "At 09:15 AM, Walter reports mild difficulty catching his breath after standing briefly. No visible swelling or fluid retention is noted. Breathing improves with rest.",
+      "danger_level": "Low"
+    },
+    {
+      "start_time": "10:00 AM",
+      "end_time": "10:10 AM",
+      "symptoms": [
+        "Mild Anxiety"
+      ],
+      "confidence": 0.60,
+      "description": "At 10:00 AM, Walter appears a little uneasy but is otherwise stable. His breathing rate is slightly above normal for his age, but there are no urgent concerns.",
+      "danger_level": "Low"
+    }
+  ],
+  "danger_level": "Low",
+  "description": "Walter Schmidt, an 82-year-old male with mild asthma and well-managed chronic conditions, shows occasional mild shortness of breath and dry coughing. His symptoms remain stable and do not suggest any acute distress. Mild fatigue and restlessness are observed but resolve quickly.",
+  "vitals": {
+    "heart_rate": 82.0,
+    "blood_pressure": "130/80",
+    "blood_oxygen": 95.0,
+    "blood_glucose": 110.0,
+    "temperature": 36.8,
+    "respiratory_rate": 18.0,
+    "pulse_rate": 82.0
+  },
+  "admission_date": "2024-01-01"
+}

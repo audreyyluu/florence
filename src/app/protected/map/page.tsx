@@ -57,6 +57,17 @@ interface RoomData {
   staffCount: number
   lastActivity: Date
   hasAlert: boolean
+  vitals?: {
+    heartRate?: number
+    bloodPressure?: string
+    oxygenLevel?: number
+    temperature?: number
+  }
+  activities?: {
+    timestamp: Date
+    description: string
+    type: 'movement' | 'staff' | 'alert' | 'vitals'
+  }[]
 }
 
 const generateMockRooms = (): RoomData[] => {
@@ -72,18 +83,19 @@ const generateMockRooms = (): RoomData[] => {
     105: 'alerted',
     106: 'urgent',
     107: 'stable',
-    108: 'urgent'
+    108: 'urgent',
+    109: 'stable' // Updated status for room 109
   }
   
   return Array.from({ length: 18 }, (_, i) => {
     const roomNumber = 100 + i
     
-    // Use predefined status for rooms 100-108, random status for others
-    const status = roomNumber <= 108 
+    // Use predefined status for rooms 100-109, random status for others
+    const status = roomNumber <= 109 
       ? frontPageRoomStatuses[roomNumber] 
       : statuses[Math.floor(Math.random() * statuses.length)]
     
-    return {
+    const room: RoomData = {
       id: i + 1,
       roomNumber,
       status,
@@ -94,6 +106,43 @@ const generateMockRooms = (): RoomData[] => {
       lastActivity: new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)),
       hasAlert: status === 'urgent'
     }
+    
+    // Special data for room 109
+    if (roomNumber === 109) {
+      room.patientName = "John Smith"
+      room.lastActivity = new Date() // Most recent activity
+      room.staffCount = 1
+      room.vitals = {
+        heartRate: 88,
+        bloodPressure: "130/85",
+        oxygenLevel: 96,
+        temperature: 99.1
+      }
+      room.activities = [
+        {
+          timestamp: new Date(Date.now() - 5 * 60000), // 5 minutes ago
+          description: "Nurse checked on patient",
+          type: "staff"
+        },
+        {
+          timestamp: new Date(Date.now() - 15 * 60000), // 15 minutes ago
+          description: "Patient moving in bed",
+          type: "movement"
+        },
+        {
+          timestamp: new Date(Date.now() - 30 * 60000), // 30 minutes ago
+          description: "Vital signs checked",
+          type: "vitals"
+        },
+        {
+          timestamp: new Date(Date.now() - 120 * 60000), // 2 hours ago
+          description: "Medication administered",
+          type: "staff"
+        }
+      ]
+    }
+    
+    return room
   })
 }
 

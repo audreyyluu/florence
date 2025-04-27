@@ -13,25 +13,62 @@ export function Header() {
 
   return (
     <motion.header 
-      className="w-full py-4"
+      className="w-full py-4 sticky top-0 z-50"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2">
-          <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert"></Image>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <AuthButton trigger={<Button size="lg">Dashboard</Button>} />
-          <Unauthenticated>
-            <AuthButton trigger={<Button variant="outline">Sign Up</Button>} />
-            <AuthButton trigger={<Button>Login</Button>} />
-          </Unauthenticated>
-          <Authenticated>
-            <Button onClick={() => signOut()}>Logout</Button>
-          </Authenticated>
-        </nav>
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="backdrop-blur-md bg-white/60 dark:bg-gray-900/60 shadow-sm rounded-full py-2 px-6 flex justify-between items-center">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            <Link href="/" className="flex items-center gap-2">
+              <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert" />
+            </Link>
+          </motion.div>
+          
+          <nav className="flex items-center gap-3">
+            <Authenticated>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button 
+                  onClick={() => signOut()} 
+                  variant="outline" 
+                  className="rounded-full px-6 font-medium"
+                >
+                  Logout
+                </Button>
+              </motion.div>
+            </Authenticated>
+            
+            <Unauthenticated>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <AuthButton trigger={
+                  <Button variant="outline" className="rounded-full px-6 font-medium">
+                    Login
+                  </Button>
+                } />
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <AuthButton trigger={
+                  <Button className="rounded-full px-6 font-medium" size="lg">
+                    Get Started
+                  </Button>
+                } />
+              </motion.div>
+            </Unauthenticated>
+          </nav>
+        </div>
       </div>
     </motion.header>
   )

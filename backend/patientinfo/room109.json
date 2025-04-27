@@ -1,0 +1,33 @@
+{
+    "full_name": "Walter Schmidt",
+    "location": "Miami, Florida",
+    "age": 82,
+    "pre_existing_conditions": [
+      "Pre-diabetes",
+      "Seasonal Allergies"
+    ],
+    "current_symptoms": [
+      "Occasional shortness of breath during activity"
+    ],
+    "diagnosis": "Mild Asthma Exacerbation",
+    "allergies": "Penicillin",
+    "medications": [
+      "Albuterol inhaler (as needed)",
+      "Lisinopril (low dose)",
+      "Lifestyle modification for blood sugar control"
+    ],
+    "close_contacts": [
+      {
+        "name": "Susan Schmidt",
+        "relationship": "Daughter",
+        "location": "Atlanta, Georgia",
+        "phone_number": "404-555-2929"
+      },
+      {
+        "name": "Robert Schmidt",
+        "relationship": "Son",
+        "location": "Orlando, Florida",
+        "phone_number": "407-555-8787"
+      }
+    ]
+}
