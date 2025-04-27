@@ -1,0 +1,37 @@
+{
+  "full_name": "Drusilla Atherton",
+  "location": "Jacksonville, FL",
+  "age": 58,
+  "pre_existing_conditions": [
+    "Hypertension",
+    "Type 2 Diabetes",
+    "Osteoarthritis"
+  ],
+  "current_symptoms": [
+    "Shortness of breath",
+    "Chest pain",
+    "Fatigue",
+    "Edema in lower extremities"
+  ],
+  "diagnosis": "Congestive Heart Failure",
+  "allergies": "Penicillin",
+  "medications": [
+    "Lisinopril",
+    "Metformin",
+    "Simvastatin"
+  ],
+  "close_contacts": [
+    {
+      "name": "Bartholomew Atherton",
+      "relationship": "Spouse",
+      "location": "Jacksonville, FL",
+      "phone_number": "904-555-3456"
+    },
+    {
+      "name": "Celeste Atherton",
+      "relationship": "Daughter",
+      "location": "Atlanta, GA",
+      "phone_number": "404-555-8790"
+    }
+  ]
+}

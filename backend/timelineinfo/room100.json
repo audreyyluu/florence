@@ -1,0 +1,75 @@
+{
+    "room_number": "Hospital Room Surveillance",
+    "predicted_symptoms": [
+      "Shortness of breath",
+      "Fatigue",
+      "Edema in lower extremities",
+      "Hypertension"
+    ],
+    "timestamps": [
+      {
+        "start_time": "00:00 AM",
+        "end_time": "00:01 AM",
+        "symptoms": [
+          "Shortness of breath"
+        ],
+        "confidence": 0.75,
+        "description": "Drusilla Atherton is lying in a hospital bed with a blue blanket covering her. Her breathing seems slightly labored, although not critically so. She appears fatigued and is mostly still. She is wearing glasses. Her hands are visible and seem slightly swollen.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "00:01 AM",
+        "end_time": "00:02 AM",
+        "symptoms": [
+          "Fatigue"
+        ],
+        "confidence": 0.6,
+        "description": "Drusilla remains mostly still, indicating fatigue. Her eyes are open, but her movements are minimal. There is no visible distress or significant change in her condition during this time.",
+        "danger_level": "Low"
+      },
+      {
+        "start_time": "00:02 AM",
+        "end_time": "00:03 AM",
+        "symptoms": [
+          "Edema in lower extremities"
+        ],
+        "confidence": 0.5,
+        "description": "While the lower extremities are not clearly visible, the edema is potentially consistent with her pre-existing Congestive Heart Failure diagnosis. There is not enough detail to determine the severity of the edema.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "00:03 AM",
+        "end_time": "00:04 AM",
+        "symptoms": [
+          "Shortness of breath",
+          "Fatigue"
+        ],
+        "confidence": 0.7,
+        "description": "Drusilla's breathing continues to be slightly labored. She hasn't moved, and she appears to be resting. Possible fatigue or weakness can be inferred.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "00:04 AM",
+        "end_time": "00:05 AM",
+        "symptoms": [
+          "Shortness of breath",
+          "Hypertension"
+        ],
+        "confidence": 0.65,
+        "description": "Drusilla's breathing continues to be monitored as she lies in the bed. Given her pre-existing conditions including hypertension and congestive heart failure, the shortness of breath indicates that is potentially affecting her.",  
+        "danger_level": "Moderate"
+      }
+    ],
+    "danger_level": "Moderate",
+    "description": "Drusilla Atherton, a 58-year-old patient with pre-existing conditions of hypertension, type 2 diabetes, and osteoarthritis, is in the hospital for Congestive Heart Failure treatment. She exhibits symptoms of shortness of breath, fatigue, and potential edema in her extremities. These conditions require close monitoring.",
+    "vitals": {
+      "heart_rate": 85.0,
+      "blood_pressure": "140/90",
+      "blood_oxygen": 94.0,
+      "blood_glucose": 150.0,
+      "temperature": 37.2,
+      "respiratory_rate": 20.0,
+      "pulse_rate": 85.0
+    },
+    "admission_date": "2024-01-06"
+  }

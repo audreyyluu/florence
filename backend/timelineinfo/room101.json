@@ -1,0 +1,81 @@
+{
+    "room_number": "3B",
+    "predicted_symptoms": [
+      "Shortness of breath",
+      "Elevated blood pressure",
+      "Irregular heartbeat",
+      "Fluid retention",
+      "Potential Atrial Fibrillation",
+      "Possible medication side effects",
+      "Anxiety",
+      "Fatigue"
+    ],
+    "timestamps": [
+      {
+        "start_time": "06:05 AM",
+        "end_time": "06:10 AM",
+        "symptoms": [
+          "Shortness of breath",
+          "Elevated blood pressure"
+        ],
+        "confidence": 0.8,
+        "description": "Eleanor Ainsworth is lying in bed, appearing slightly restless. Her breathing seems a bit labored, with her chest rising and falling more rapidly than normal. There's a visible monitor displaying vital signs, though the numbers are not entirely clear from the video, but it looks like her blood pressure is on the higher side. This could indicate an exacerbation of her heart failure.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "07:15 AM",
+        "end_time": "07:20 AM",
+        "symptoms": [
+          "Irregular heartbeat",
+          "Potential Atrial Fibrillation"
+        ],
+        "confidence": 0.7,
+        "description": "The heart monitor next to Eleanor shows an irregular heartbeat. Given her pre-existing Atrial Fibrillation, this could be a recurrence or worsening of the condition. An irregular heartbeat could lead to poor cardiac output and further exacerbate her shortness of breath and fluid retention, consistent with her diagnosis of acute heart failure exacerbation.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "08:00 AM",
+        "end_time": "08:05 AM",
+        "symptoms": [
+          "Fluid retention",
+          "Possible medication side effects"
+        ],
+        "confidence": 0.6,
+        "description": "Eleanor's face appears somewhat puffy, which could be related to fluid retention, a common symptom of heart failure. Also, she could have some side effects from her medications like Furosemide, Lisinopril, and Metoprolol. This might require adjustments to her medication regimen.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "09:30 AM",
+        "end_time": "09:35 AM",
+        "symptoms": [
+          "Anxiety"
+        ],
+        "confidence": 0.5,
+        "description": "Eleanor is fidgeting and appears anxious. This anxiety may be related to her condition or to being in the hospital. This could increase her heart rate and blood pressure, potentially worsening her symptoms.",
+        "danger_level": "Low"
+      },
+      {
+        "start_time": "10:45 AM",
+        "end_time": "10:50 AM",
+        "symptoms": [
+          "Fatigue",
+          "Shortness of breath"
+        ],
+        "confidence": 0.7,
+        "description": "Eleanor appears tired and is breathing more rapidly. She is lying still and seems to have limited energy. Increased fatigue combined with continuing shortness of breath suggests her condition is not improving significantly.",
+        "danger_level": "Moderate"
+      }
+    ],
+    "danger_level": "Moderate",
+    "description": "Eleanor Ainsworth, a 72-year-old female from Charleston, SC, is in the hospital due to an acute heart failure exacerbation. She is showing symptoms including shortness of breath, elevated blood pressure, irregular heartbeat, and fluid retention. She appears restless and possibly anxious. Her condition requires close monitoring and potential adjustments to her medications. Overall, the patient's condition warrants close observation and medical intervention.",
+    "vitals": {
+      "heart_rate": 95.0,
+      "blood_pressure": "160/90",
+      "blood_oxygen": 92.0,
+      "blood_glucose": 150.0,
+      "temperature": 37.2,
+      "respiratory_rate": 22.0,
+      "pulse_rate": 95.0
+    },
+    "admission_date": "2024-01-05"
+  }

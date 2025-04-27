@@ -1,0 +1,39 @@
+{
+  "full_name": "Eleanor Ainsworth",
+  "location": "Charleston, SC",
+  "age": 72,
+  "pre_existing_conditions": [
+    "Hypertension",
+    "Type 2 Diabetes",
+    "Chronic Kidney Disease",
+    "Atrial Fibrillation"
+  ],
+  "current_symptoms": [
+    "Shortness of breath",
+    "Elevated blood pressure",
+    "Irregular heartbeat",
+    "Fluid retention"
+  ],
+  "diagnosis": "Acute Heart Failure Exacerbation",
+  "allergies": "Sulfa drugs",
+  "medications": [
+    "Furosemide",
+    "Lisinopril",
+    "Metoprolol",
+    "Insulin"
+  ],
+  "close_contacts": [
+    {
+      "name": "Robert Ainsworth",
+      "relationship": "Spouse",
+      "location": "Charleston, SC",
+      "phone_number": "843-555-1212"
+    },
+    {
+      "name": "Catherine Mallory",
+      "relationship": "Daughter",
+      "location": "Atlanta, GA",
+      "phone_number": "404-555-3434"
+    }
+  ]
+}

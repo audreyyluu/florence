@@ -1,0 +1,58 @@
+{
+    "room_number": "string",
+    "predicted_symptoms": ["Difficulty Breathing", "Fatigue", "Fever", "Anemia", "Pain", "Possible Dehydration"],
+    "timestamps": [
+      {
+        "start_time": "06:00 AM",
+        "end_time": "06:15 AM",
+        "symptoms": ["Fatigue", "Possible Anemia"],
+        "confidence": 0.7,
+        "description": "Jamal Thompson, a 10-year-old with Sickle Cell Anemia, is seen sleeping in his hospital bed, clutching a teddy bear. He appears pale, which could be due to his underlying condition of Anemia. Overall, he is resting peacefully but is very pale.",
+        "danger_level": "Low"
+      },
+      {
+        "start_time": "09:30 AM",
+        "end_time": "09:45 AM",
+        "symptoms": ["Difficulty Breathing", "Fatigue"],
+        "confidence": 0.8,
+        "description": "Jamal is still sleeping. However, his breathing is slightly labored, with his chest rising and falling more rapidly than normal. These are possible signs of fatigue and difficulty breathing due to a vaso-occlusive crisis from his Sickle Cell Anemia, as well as asthma which he is predisposed to.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "12:00 PM",
+        "end_time": "12:15 PM",
+        "symptoms": ["Fever", "Possible Dehydration"],
+        "confidence": 0.6,
+        "description": "Jamal is still asleep. He appears to be sweating lightly on his forehead, which coupled with his sickle cell anemia, asthma, and vaso-occlusive crisis, may be indicative of a fever. Additionally, his skin appears somewhat dry, raising the possibility of dehydration.",
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "03:30 PM",
+        "end_time": "03:45 PM",
+        "symptoms": ["Difficulty Breathing", "Pain"],
+        "confidence": 0.75,
+        "description": "Jamal remains asleep. There is a slight frown on his face, suggesting possible pain, likely related to his vaso-occlusive crisis. His breathing remains slightly labored, and he seems to be restless, shifting in his sleep.",       
+        "danger_level": "Moderate"
+      },
+      {
+        "start_time": "06:00 PM",
+        "end_time": "06:15 PM",
+        "symptoms": ["Fatigue", "Possible Anemia"],
+        "confidence": 0.7,
+        "description": "Jamal is still asleep. Overall, he is resting peacefully but is very pale. This, and his vaso-occlusive crisis, likely causes fatigue and anemia.",
+        "danger_level": "Low"
+      }
+    ],
+    "danger_level": "Moderate",
+    "description": "Jamal Thompson, a 10-year-old with Sickle Cell Anemia, is recovering in a hospital bed. He is currently asleep, but shows intermittent signs of discomfort, labored breathing, possible fever, and possible dehydration. His pallor, due to his anemia and underlying medical conditions, is also noteworthy.",
+    "vitals": {
+      "heart_rate": 95.0,
+      "blood_pressure": "100/60",
+      "blood_oxygen": 94.0,
+      "blood_glucose": 90.0,
+      "temperature": 38.1,
+      "respiratory_rate": 22.0,
+      "pulse_rate": 95.0
+    },
+    "admission_date": "2024-07-18"
+  }

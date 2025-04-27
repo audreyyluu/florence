@@ -1,0 +1,37 @@
+{
+  "full_name": "Jamal Thompson",
+  "location": "Atlanta, GA",
+  "age": 10,
+  "pre_existing_conditions": [
+    "Asthma",
+    "Sickle Cell Anemia"
+  ],
+  "current_symptoms": [
+    "Fever",
+    "Difficulty Breathing",
+    "Fatigue",
+    "Anemia"
+  ],
+  "diagnosis": "Vaso-occlusive crisis due to Sickle Cell Anemia",
+  "allergies": "None known",
+  "medications": [
+    "Pain Medication",
+    "IV Fluids",
+    "Oxygen",
+    "Antibiotics"
+  ],
+  "close_contacts": [
+    {
+      "name": "Latoya Thompson",
+      "relationship": "Mother",
+      "location": "Atlanta, GA",
+      "phone_number": "404-555-1234"
+    },
+    {
+      "name": "David Thompson",
+      "relationship": "Father",
+      "location": "Atlanta, GA",
+      "phone_number": "404-555-5678"
+    }
+  ]
+}
