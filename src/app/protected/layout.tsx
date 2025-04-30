@@ -1,18 +1,24 @@
 "use client";
 
-import type { MenuItem } from "@/components/protected/Sidebar";
-import Sidebar from "@/components/protected/Sidebar";
-import { useAuth } from "@/hooks/use-auth";
-import { AuthLoading, Authenticated, Unauthenticated } from "convex/react";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { redirect } from "next/navigation";
+import SidebarComponent from "@/components/protected/Sidebar";
+import type { MenuItem } from "@/components/protected/Sidebar";
+import { useEffect } from "react";
 
 export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { isLoading, isAuthenticated, user } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      redirect('/auth');
+    }
+  }, [isLoading, isAuthenticated]);
 
   const protectedMenuItems: MenuItem[] = [
     { label: "Dashboard", href: "/protected/", section: "Monitoring" },
@@ -23,45 +29,26 @@ export default function ProtectedLayout({
     { label: "User Guide", href: "/protected/user-guide", section: "System" }
   ];
 
-  const { isLoading, isAuthenticated, user } = useAuth();
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-12 w-12 animate-spin" />
+      </div>
+    );
+  }
 
-  const router = useRouter();
-  const pathname = usePathname();
-
-  // Prefetch all menu items for faster navigation
-  useEffect(() => {
-    if (isAuthenticated) {
-      protectedMenuItems.forEach(item => {
-        if (item.href !== pathname) {
-          router.prefetch(item.href);
-        }
-      });
-    }
-  }, [isAuthenticated, pathname, router]);
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push(`/auth?redirect=${encodeURIComponent(pathname)}`);
-    }
-  });
+  if (!isAuthenticated) {
+    return null; // Will be redirected by the useEffect
+  }
 
   return (
-    <>
-      <Unauthenticated>
-        <div className="flex items-center justify-center min-h-screen">
-          <Loader2 className="h-12 w-12 animate-spin " />
-        </div>
-      </Unauthenticated>
-      <AuthLoading>
-        <div className="flex items-center justify-center min-h-screen">
-          <Loader2 className="h-12 w-12 animate-spin " />
-        </div>
-      </AuthLoading>
-      <Authenticated>
-        <Sidebar menuItems={protectedMenuItems} userEmail={user?.email} userName={user?.name} logoName="CareCam">
-          {children}
-        </Sidebar>
-      </Authenticated>
-    </>
+    <SidebarComponent 
+      menuItems={protectedMenuItems} 
+      userEmail={user?.email} 
+      userName={user?.user_metadata?.full_name}
+      logoName="CareCam"
+    >
+      {children}
+    </SidebarComponent>
   );
 }

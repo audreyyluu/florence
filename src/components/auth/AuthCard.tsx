@@ -40,8 +40,10 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
     setError(null);
     try {
       const formData = new FormData(event.currentTarget);
-      await signIn("email-otp", formData);
-      setStep({ email: formData.get("email") as string });
+      const email = formData.get("email") as string;
+      const { error } = await signIn("email-otp", { email });
+      if (error) throw error;
+      setStep({ email });
       setIsLoading(false);
     } catch (error) {
       console.error("Email sign-in error:", error);
@@ -59,24 +61,38 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
     setIsLoading(true);
     setError(null);
     try {
-      const formData = new FormData(event.currentTarget);
-      await signIn("email-otp", formData);
-      
-      console.log("signed in");
+      const email = (step as { email: string }).email;
+      const { error } = await signIn("email-otp", { email, code: otp });
+      if (error) throw error;
       
       if (onAuthSuccess) {
         onAuthSuccess();
       }
       
-      router.push(searchParams.get("redirect") || "/protected");
+      router.push("http://localhost:3000/protected");
       
     } catch (error) {
       console.error("OTP verification error:", error);
-
       setError("The verification code you entered is incorrect.");
       setIsLoading(false);
-
       setOtp("");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { error } = await signIn("google", {});
+      if (error) throw error;
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to sign in with Google. Please try again."
+      );
+      setIsLoading(false);
     }
   };
 
@@ -89,53 +105,86 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
               <CardHeader className="text-center">
                 <CardTitle className="text-xl">Get Started</CardTitle>
                 <CardDescription>
-                  Enter your email to log in or sign up
+                  Sign in or sign up to continue
                 </CardDescription>
               </CardHeader>
-              <form onSubmit={handleEmailSubmit}>
-                <CardContent>
-                  <div className="flex justify-center">
-                    <Image
-                      src="./auth.svg"
-                      alt="Lock Icon"
-                      width={200}
-                      height={200}
-                      className="rounded-lg -mt-4"
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <Label htmlFor="email">Enter your email</Label>
-                  </div>
-                  <div className="relative flex items-center gap-2">
-                    <div className="relative flex-1">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        name="email"
-                        placeholder="name@example.com"
-                        type="email"
-                        className="pl-9"
-                        disabled={isLoading}
-                        required
+              <CardContent>
+                <div className="flex justify-center">
+                  <Image
+                    src="./auth.svg"
+                    alt="Lock Icon"
+                    width={200}
+                    height={200}
+                    className="rounded-lg -mt-4"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleGoogleSignIn}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Image
+                        src="/google.svg"
+                        alt="Google"
+                        width={20}
+                        height={20}
+                        className="mr-2"
                       />
+                    )}
+                    Continue with Google
+                  </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
                     </div>
-                    <Button
-                      type="submit"
-                      variant="outline"
-                      size="icon"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <ArrowRight className="h-4 w-4" />
-                      )}
-                    </Button>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        Or continue with email
+                      </span>
+                    </div>
                   </div>
-                  {error && (
-                    <p className="mt-2 text-sm text-red-500">{error}</p>
-                  )}
-                </CardContent>
-              </form>
+
+                  <form onSubmit={handleEmailSubmit}>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="email">Email</Label>
+                        <div className="relative flex-1">
+                          <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            name="email"
+                            placeholder="name@example.com"
+                            type="email"
+                            className="pl-9"
+                            disabled={isLoading}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          "Continue with Email"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+                {error && (
+                  <p className="mt-4 text-sm text-red-500 text-center">{error}</p>
+                )}
+              </CardContent>
             </>
           ) : (
             <>
@@ -147,9 +196,6 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
               </CardHeader>
               <form onSubmit={handleOtpSubmit}>
                 <CardContent className="pb-4">
-                  <input type="hidden" name="email" value={step.email} />
-                  <input type="hidden" name="code" value={otp} />
-
                   <div className="flex justify-center">
                     <InputOTP
                       value={otp}
@@ -180,7 +226,7 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
                     </Button>
                   </p>
                 </CardContent>
-                <CardFooter className="flex-col gap-2">
+                <CardFooter className="flex flex-col gap-2">
                   <Button
                     type="submit"
                     className="w-full"
@@ -213,15 +259,7 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
           )}
 
           <div className="py-4 px-6 text-xs text-center text-muted-foreground bg-muted border-t rounded-b-lg">
-            Secured by{" "}
-            <a
-              href="https://vly.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-primary transition-colors"
-            >
-              vly.ai
-            </a>
+            Florence © 2025
           </div>
         </Card>
       </div>

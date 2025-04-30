@@ -1,29 +1,62 @@
-import { api } from "@/convex/_generated/api";
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useConvexAuth, useQuery } from "convex/react";
-
-import { useEffect, useState } from "react";
+import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react'
+import { type User } from '@supabase/supabase-js'
 
 export function useAuth() {
-  const { isLoading: isAuthLoading, isAuthenticated } = useConvexAuth();
-  const user = useQuery(api.users.currentUser);
-  const { signIn, signOut } = useAuthActions();
+  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null)
+  const supabase = createClient()
 
-  const [isLoading, setIsLoading] = useState(true);
-
-  // This effect updates the loading state once auth is loaded and user data is available
-  // It ensures we only show content when both authentication state and user data are ready
   useEffect(() => {
-    if (!isAuthLoading && user !== undefined) {
-      setIsLoading(false);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+      setIsLoading(false)
+    })
+
+    return () => {
+      subscription.unsubscribe()
     }
-  }, [isAuthLoading, user]);
+  }, [supabase])
+
+  const signIn = async (provider: string, options: any) => {
+    if (provider === 'google') {
+      return await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      })
+    } else if (provider === 'email-otp') {
+      const { email, code } = options
+      if (code) {
+        return await supabase.auth.verifyOtp({
+          email,
+          token: code,
+          type: 'email'
+        })
+      } else {
+        return await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`
+          }
+        })
+      }
+    }
+    throw new Error(`Unsupported provider: ${provider}`)
+  }
+
+  const signOut = async () => {
+    await supabase.auth.signOut()
+  }
 
   return {
     isLoading,
-    isAuthenticated,
     user,
+    isAuthenticated: !!user,
     signIn,
     signOut,
-  };
+  }
 }

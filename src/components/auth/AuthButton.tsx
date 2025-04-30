@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { AuthCard } from "./AuthCard"
-import { Authenticated, Unauthenticated, useConvexAuth } from "convex/react"
+import { useAuth } from "@/hooks/use-auth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
@@ -72,7 +72,7 @@ export function AuthButton({
   dashboardTrigger,
   useModal = true,
 }: AuthButtonProps) {
-  const { isAuthenticated, isLoading } = useConvexAuth()
+  const { isAuthenticated, isLoading } = useAuth()
 
   if (isLoading) {
     return (
@@ -87,20 +87,17 @@ export function AuthButton({
 
   return (
     <div>
-      <Authenticated>
-        {dashboardTrigger ? 
-          <div onClick={() => window.location.href = "/protected"}>
+      {isAuthenticated ? (
+        dashboardTrigger ? 
+          <div onClick={() => window.location.href = "http://localhost:3000/protected"}>
             {dashboardTrigger}
           </div> :
           <Button>
-            <Link href="/protected">Dashboard</Link>
+            <Link href="http://localhost:3000/protected">Dashboard</Link>
           </Button>
-        }
-      </Authenticated>
-      
-      <Unauthenticated>
+      ) : (
         <UnauthenticatedButton useModal={useModal} trigger={trigger}/>
-      </Unauthenticated>
+      )}
     </div>
   )
 }
