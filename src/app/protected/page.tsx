@@ -52,11 +52,11 @@ const LoadingCard = () => (
 type PatientStatus = 'stable' | 'check' | 'urgent' | 'alerted';
 
 // Status color mapping
-const statusColors: Record<PatientStatus, { color: string; label: string }> = {
-  stable: { color: 'bg-green-500', label: 'Stable' },
-  check: { color: 'bg-yellow-500', label: 'Check on patient' },
-  urgent: { color: 'bg-red-500', label: 'Needs immediate attention' },
-  alerted: { color: 'bg-blue-500', label: 'Staff alerted' },
+const statusColors: Record<PatientStatus, { color: string; label: string; description: string }> = {
+  stable: { color: 'bg-green-200', label: '', description: 'Stable' },
+  check: { color: 'bg-yellow-200', label: '', description: 'Check' },
+  urgent: { color: 'bg-red-200', label: '', description: 'Urgent' },
+  alerted: { color: 'bg-blue-200', label: '', description: 'Staff Alerted' },
 };
 
 // Status priority order for sorting (highest priority first)
@@ -185,10 +185,10 @@ export default function ProtectedPage() {
             <PopoverContent className="w-64" align="end">
               <div className="space-y-2">
                 <h3 className="font-medium">Status Color Key</h3>
-                {Object.entries(statusColors).map(([key, { color, label }]) => (
+                {Object.entries(statusColors).map(([key, { color, description }]) => (
                   <div key={key} className="flex items-center gap-2">
                     <div className={`w-4 h-4 ${color} rounded-sm border border-gray-300`}></div>
-                    <span>{label}</span>
+                    <span>{description}</span>
                   </div>
                 ))}
               </div>
@@ -204,8 +204,10 @@ export default function ProtectedPage() {
               className="overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary transition-all relative"
               onClick={() => handleRoomClick(feed.roomNumber)}
             >
-              {/* Status indicator dot */}
-              <div className={`absolute top-2 left-2 z-10 w-3 h-3 rounded-full ${statusColors[feed.status].color}`}></div>
+              {/* Status indicator banner */}
+              <div className={`absolute top-0 left-0 right-0 h-6 ${statusColors[feed.status].color} flex items-center justify-between px-2 z-10`}>
+                <span className="text-xs font-medium">{statusColors[feed.status].label}</span>
+              </div>
               
               <CameraFeed 
                 roomNumber={feed.roomNumber} 

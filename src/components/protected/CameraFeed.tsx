@@ -71,11 +71,11 @@ export function CameraFeed({
     
     // Return color based on status - matches the system used throughout the app
     switch (roomStatus) {
-      case 'stable': return 'bg-green-500'
-      case 'check': return 'bg-yellow-500'
-      case 'urgent': return 'bg-red-500'
-      case 'alerted': return 'bg-blue-500'
-      default: return 'bg-gray-500'
+      case 'stable': return 'bg-green-200'
+      case 'check': return 'bg-yellow-200'
+      case 'urgent': return 'bg-red-200'
+      case 'alerted': return 'bg-blue-200'
+      default: return 'bg-gray-200'
     }
   }
 
@@ -86,7 +86,7 @@ export function CameraFeed({
   }
 
   return (
-    <div className={`relative aspect-video bg-gray-900 rounded-lg overflow-hidden`}>
+    <div className={`relative aspect-video bg-gray-900`}>
       {videoUrl ? (
         <>
           <video

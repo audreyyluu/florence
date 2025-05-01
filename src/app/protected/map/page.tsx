@@ -355,21 +355,21 @@ export default function HospitalMapPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-2">
-                <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-md text-center">
-                  <div className="text-2xl font-bold">{totalRooms}</div>
-                  <div className="text-xs text-muted-foreground">Total Rooms</div>
+                <div className="bg-red-100 dark:bg-red-950 p-2 rounded-md text-center">
+                  <div className="text-2xl font-bold">{urgentRooms}</div>
+                  <div className="text-xs text-muted-foreground">Urgent</div>
                 </div>
-                <div className="bg-green-50 dark:bg-green-950 p-2 rounded-md text-center">
-                  <div className="text-2xl font-bold">{stableRooms}</div>
-                  <div className="text-xs text-muted-foreground">Stable</div>
-                </div>
-                <div className="bg-yellow-50 dark:bg-yellow-900 p-2 rounded-md text-center">
+                <div className="bg-yellow-100 dark:bg-yellow-900 p-2 rounded-md text-center">
                   <div className="text-2xl font-bold">{checkRooms}</div>
                   <div className="text-xs text-muted-foreground">Check</div>
                 </div>
-                <div className="bg-red-50 dark:bg-red-950 p-2 rounded-md text-center">
-                  <div className="text-2xl font-bold">{urgentRooms}</div>
-                  <div className="text-xs text-muted-foreground">Urgent</div>
+                <div className="bg-blue-100 dark:bg-blue-950 p-2 rounded-md text-center">
+                  <div className="text-2xl font-bold">{alertedRooms}</div>
+                  <div className="text-xs text-muted-foreground">Staff Alerted</div>
+                </div>
+                <div className="bg-green-100 dark:bg-green-950 p-2 rounded-md text-center">
+                  <div className="text-2xl font-bold">{stableRooms}</div>
+                  <div className="text-xs text-muted-foreground">Stable</div>
                 </div>
               </div>
             </CardContent>
@@ -388,7 +388,7 @@ export default function HospitalMapPage() {
               className="relative border rounded-md p-4 min-h-[500px] overflow-hidden"
               style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'center', transition: 'transform 0.3s ease' }}
             >
-              <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-md border z-10">
+              <div className="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-md border z-10">
                 <div className="text-xs font-medium mb-1">Status Color Key</div>
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1">

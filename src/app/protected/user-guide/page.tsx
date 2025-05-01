@@ -239,19 +239,19 @@ export default function UserGuidePage() {
                       </p>
                       <div className="grid grid-cols-2 gap-3 mt-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                          <div className="w-4 h-4 bg-green-200 rounded-full"></div>
                           <span>Stable - No issues detected</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+                          <div className="w-4 h-4 bg-yellow-200 rounded-full"></div>
                           <span>Check - Patient may need attention</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+                          <div className="w-4 h-4 bg-red-200 rounded-full"></div>
                           <span>Urgent - Immediate attention required</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                          <div className="w-4 h-4 bg-blue-200 rounded-full"></div>
                           <span>Alerted - Staff has been notified</span>
                         </div>
                       </div>

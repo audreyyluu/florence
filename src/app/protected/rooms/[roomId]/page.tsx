@@ -20,7 +20,9 @@ import {
   Clock,
   Edit,
   Save,
-  X
+  X,
+  Brain,
+  Percent
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -123,6 +125,16 @@ type PatientDataFromBackend = {
     location: string
     phone_number: string
   }[]
+}
+
+type PredictionData = {
+  id: string
+  condition: string
+  confidence: number
+  details: string
+  timestamp: Date
+  severity: 'low' | 'medium' | 'high'
+  recommendations: string[]
 }
 
 const generateMockDangerousBehaviors = (count: number): DangerousBehavior[] => {
@@ -397,6 +409,20 @@ const getPatientSummary = (behaviors: DangerousBehavior[], patientInfo: PatientI
   return `${patientInfo.name} has ${diagnosis} with current symptoms: ${symptoms}. Patient requires monitoring for ${timelineData.danger_level.toLowerCase()} risk conditions.`;
 };
 
+// Add static room data from dashboard
+const staticRoomStatuses: Record<number, PatientStatus> = {
+  100: 'urgent',
+  101: 'check',
+  102: 'stable',
+  103: 'urgent',
+  104: 'urgent',
+  105: 'alerted',
+  106: 'urgent',
+  107: 'stable',
+  108: 'urgent',
+  109: 'stable',
+};
+
 export default function RoomPage({ params }: { params: { roomId: string } }) {
   const router = useRouter()
   const unwrappedParams = React.use(params as any) as { roomId: string }
@@ -426,6 +452,48 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentPosition, setCurrentPosition] = useState(0)
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null)
+  
+  const [predictions, setPredictions] = useState<PredictionData[]>([
+    {
+      id: '1',
+      condition: 'Fall Risk',
+      confidence: 89.5,
+      details: 'Based on recent movement patterns and vital signs, patient shows elevated risk of falling',
+      timestamp: new Date(),
+      severity: 'high',
+      recommendations: [
+        'Enable bed rails',
+        'Increase monitoring frequency',
+        'Consider physical therapy assessment'
+      ]
+    },
+    {
+      id: '2',
+      condition: 'Sleep Apnea',
+      confidence: 75.2,
+      details: 'Irregular breathing patterns detected during sleep hours',
+      timestamp: new Date(Date.now() - 3600000), // 1 hour ago
+      severity: 'medium',
+      recommendations: [
+        'Monitor oxygen levels closely',
+        'Consider sleep study',
+        'Adjust bed position'
+      ]
+    },
+    {
+      id: '3',
+      condition: 'Medication Adherence',
+      confidence: 92.8,
+      details: 'High probability of consistent medication schedule adherence',
+      timestamp: new Date(Date.now() - 7200000), // 2 hours ago
+      severity: 'low',
+      recommendations: [
+        'Continue current medication schedule',
+        'Maintain monitoring',
+        'Document adherence patterns'
+      ]
+    }
+  ])
   
   // ECG animation
   useEffect(() => {
@@ -482,15 +550,10 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     roomNumber + 3
   ]
   
-  // Add function to determine statuses for nearby rooms
+  // Update function to determine statuses for nearby rooms
   const getNearbyRoomStatus = (roomNum: number): PatientStatus => {
-    // Explicitly set room 109 to have stable status
-    if (roomNum === 109) return 'stable';
-    
-    // This is a simple algorithm to assign statuses
-    // In a real implementation, this would fetch actual statuses from an API
-    const statuses: PatientStatus[] = ['stable', 'check', 'urgent', 'alerted'];
-    return statuses[roomNum % statuses.length];
+    // Use the static room statuses from the dashboard
+    return staticRoomStatuses[roomNum] || 'stable';
   };
   
   // Function to scroll chat to bottom
@@ -529,20 +592,24 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   }, []);
   
   const determineRoomStatus = (): PatientStatus => {
+    // Get the base status from static data first
+    const baseStatus = staticRoomStatuses[roomNumber] || 'stable';
+    
+    // Only override the base status if there are high severity dangerous behaviors
     if (dangerousBehaviors.some(b => b.severity === 'high')) return 'urgent';
-    if (dangerousBehaviors.some(b => b.severity === 'medium')) return 'check';
-    if (dangerousBehaviors.some(b => b.severity === 'low')) return 'alerted';
-    return 'stable';
+    
+    // Otherwise maintain the base status from the dashboard
+    return baseStatus;
   }
   
   const roomStatus = determineRoomStatus();
   
   const getStatusColor = (status: PatientStatus): string => {
     switch (status) {
-      case 'stable': return 'bg-green-500';
-      case 'check': return 'bg-yellow-500';
-      case 'urgent': return 'bg-red-500';
-      case 'alerted': return 'bg-blue-500';
+      case 'stable': return 'bg-green-200 text-black';
+      case 'check': return 'bg-yellow-200 text-black';
+      case 'urgent': return 'bg-red-200 text-black';
+      case 'alerted': return 'bg-blue-200 text-black';
     }
   }
   
@@ -805,7 +872,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
         
         <ResizablePanel defaultSize={40} minSize={30}>
           <Tabs defaultValue="activity" className="h-full">
-            <TabsList className="grid grid-cols-3 mb-4">
+            <TabsList className="grid grid-cols-4 mb-4">
               <TabsTrigger value="activity" className="flex items-center gap-2">
                 <Activity className="h-4 w-4" />
                 <span className="hidden sm:inline">Activity</span>
@@ -813,6 +880,10 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
               <TabsTrigger value="vitals" className="flex items-center gap-2">
                 <Heart className="h-4 w-4" />
                 <span className="hidden sm:inline">Vitals</span>
+              </TabsTrigger>
+              <TabsTrigger value="predictions" className="flex items-center gap-2">
+                <Brain className="h-4 w-4" />
+                <span className="hidden sm:inline">Predictions</span>
               </TabsTrigger>
               <TabsTrigger value="chat" className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
@@ -1080,6 +1151,71 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                       )}
                     </CardContent>
                   </Card>
+                </div>
+              </ScrollArea>
+            </TabsContent>
+            
+            <TabsContent value="predictions" className="h-[calc(100%-60px)]">
+              <ScrollArea className="h-full pr-4">
+                <div className="space-y-6">
+                  {predictions.map((prediction) => (
+                    <motion.div
+                      key={prediction.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Card>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <CardTitle className="text-lg">{prediction.condition}</CardTitle>
+                              <Badge 
+                                variant={
+                                  prediction.severity === 'high' ? 'destructive' : 
+                                  prediction.severity === 'medium' ? 'default' : 
+                                  'secondary'
+                                }
+                              >
+                                {prediction.severity}
+                              </Badge>
+                            </div>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <div className="flex items-center gap-1 text-sm font-medium">
+                                    <Percent className="h-4 w-4" />
+                                    {prediction.confidence.toFixed(1)}%
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Confidence Score</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {prediction.details}
+                          </p>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            <h4 className="font-medium text-sm">Recommendations:</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                              {prediction.recommendations.map((rec, index) => (
+                                <li key={index} className="text-sm text-muted-foreground">
+                                  {rec}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </CardContent>
+                        <CardFooter className="text-xs text-muted-foreground">
+                          Last updated: {formatTimestamp(prediction.timestamp)}
+                        </CardFooter>
+                      </Card>
+                    </motion.div>
+                  ))}
                 </div>
               </ScrollArea>
             </TabsContent>
