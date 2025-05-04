@@ -195,9 +195,12 @@ def ask_llm(system_prompt: str, user_query: str) -> str:
 def chat_endpoint(request: ChatRequest):
     """Process a chat message and return an AI response based on patient data."""
     try:
+        # Clean room number by removing "Room " prefix and spaces
+        clean_room_number = request.room_number.replace("Room ", "").replace(" ", "")
+        
         # Build file paths
-        patient_info_path = f"patientinfo/room{request.room_number}.json"
-        patient_timestamp_path = f"timelineinfo/room{request.room_number}.json"
+        patient_info_path = f"patientinfo/room{clean_room_number}.json"
+        patient_timestamp_path = f"timelineinfo/room{clean_room_number}.json"
         
         # Check if files exist
         if not os.path.exists(patient_info_path):
@@ -224,8 +227,11 @@ def chat_endpoint(request: ChatRequest):
 def get_patient_info(room_number: str):
     """Retrieve patient information for a specific room."""
     try:
+        # Clean room number by removing "Room " prefix and spaces
+        clean_room_number = room_number.replace("Room ", "").replace(" ", "")
+        
         # Build file path
-        patient_info_path = f"patientinfo/room{room_number}.json"
+        patient_info_path = f"patientinfo/room{clean_room_number}.json"
         
         # Check if file exists
         if not os.path.exists(patient_info_path):
@@ -246,8 +252,11 @@ def get_patient_info(room_number: str):
 def get_timeline_info(room_number: str):
     """Retrieve timeline information for a specific room."""
     try:
+        # Clean room number by removing "Room " prefix and spaces
+        clean_room_number = room_number.replace("Room ", "").replace(" ", "")
+        
         # Build file path
-        patient_timestamp_path = f"timelineinfo/room{room_number}.json"
+        patient_timestamp_path = f"timelineinfo/room{clean_room_number}.json"
         
         # Check if file exists
         if not os.path.exists(patient_timestamp_path):

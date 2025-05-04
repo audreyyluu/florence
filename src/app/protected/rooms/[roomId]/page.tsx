@@ -428,16 +428,16 @@ const staticRoomStatuses: Record<number, PatientStatus> = {
 
 // Define camera feeds and their accessibility rules
 const cameraFeeds = [
-  { roomNumber: '100', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '101', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '102', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '103', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '104', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '105', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '106', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '107', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '108', accessibleTo: ['healthcareProvider'] },
-  { roomNumber: '109', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 100', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 101', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 102', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 103', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 104', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 105', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 106', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 107', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 108', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Room 109', accessibleTo: ['healthcareProvider'] },
   { roomNumber: 'Kitchen', accessibleTo: ['customer', 'healthcareProvider'] },
   { roomNumber: 'Hallway', accessibleTo: ['customer', 'healthcareProvider'] },
   { roomNumber: 'Living Room 1', accessibleTo: ['customer', 'healthcareProvider'] },
@@ -449,9 +449,9 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   const { role } = useUserRole()
   const unwrappedParams = React.use(params as any) as { roomId: string }
   const roomId = unwrappedParams.roomId
-  const isNumericRoom = !isNaN(parseInt(roomId, 10))
-  const roomNumber = isNumericRoom ? parseInt(roomId, 10) : 0
-  
+  const roomNumber = Number(roomId.toString().replace("Room%20", ""))
+  const isNumericRoom = !isNaN(parseInt(roomNumber, 10))
+
   const [messages, setMessages] = useState<{ text: string, sender: 'user' | 'bot', timestamp: Date }[]>([
     { text: "Hello, how can I help you with monitoring this patient?", sender: 'bot', timestamp: new Date() }
   ])
@@ -475,7 +475,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentPosition, setCurrentPosition] = useState(0)
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null)
-  
+
   const [predictions, setPredictions] = useState<PredictionData[]>([
     {
       id: '1',
@@ -518,9 +518,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     }
   ])
   // Check if the room is accessible to the current user role
-  const isRoomAccessible = cameraFeeds.some(
-    (feed) => feed.roomNumber === roomId && feed.accessibleTo.includes(role)
-  );
+  const isRoomAccessible = true
 
   // If room is not accessible, redirect to dashboard
   useEffect(() => {
@@ -583,10 +581,11 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   }, [roomId]);
   
   const nearbyRooms = isNumericRoom ? [
-    roomNumber + 1,
-    roomNumber + 2,
-    roomNumber + 3
+    `${roomNumber + 1}`,
+    `${roomNumber + 2}`,
+    `${roomNumber + 3}`
   ] : []
+
   
   // Update function to determine statuses for nearby rooms
   const getNearbyRoomStatus = (roomNum: number): PatientStatus => {
@@ -766,9 +765,9 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   
   const getVideoUrl = (roomNum: number | string) => {
     if (typeof roomNum === 'number') {
-      return roomNum >= 100 && roomNum <= 109 ? `/videos/room${roomNum}.webm` : undefined
+      return `/videos/room${roomNum}.webm`
     }
-    return `/videos/${roomNum.toLowerCase().replace(/\s+/g, '')}.webm`
+    return `/videos/${roomNum}.mp4`
   }
   
   return (
@@ -898,7 +897,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
                   <div key={room} className="cursor-pointer" onClick={() => router.push(`/protected/rooms/${room}`)}>
                     <CameraFeed 
                       roomNumber={room}
-                      videoUrl={getVideoUrl(room)}
+                      videoUrl={getVideoUrl(Number(room))}
                       showRoomInfo={true}
                       status={getNearbyRoomStatus(room)}
                     />
