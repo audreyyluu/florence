@@ -56,16 +56,31 @@ import {
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { motion } from "framer-motion"
+import { useUserRole } from "@/contexts/UserRoleContext"
 
 // Types for staff data
 type StaffRole = 'doctor' | 'nurse' | 'assistant' | 'specialist'
 type StaffStatus = 'active' | 'break' | 'off-duty'
+
+// Types for caregiver data
+type CaregiverRole = 'primary' | 'secondary' | 'relief'
+type CaregiverStatus = 'active' | 'break' | 'off-duty'
 
 interface StaffMember {
   id: string
   name: string
   role: StaffRole
   status: StaffStatus
+  currentRoom: number | null
+  timeInRoom: number | null // minutes
+  assignedRooms: number[]
+}
+
+interface CaregiverMember {
+  id: string
+  name: string
+  role: CaregiverRole
+  status: CaregiverStatus
   currentRoom: number | null
   timeInRoom: number | null // minutes
   assignedRooms: number[]
@@ -79,6 +94,7 @@ interface RoomStaffing {
   currentStaff: string[] // IDs of staff currently in room
   lastVisit: Date | null
   minimumStaffNeeded: number
+  roomName: string
 }
 
 // Define status types to ensure type safety - copied from dashboard
@@ -141,87 +157,94 @@ const staticStaffData: StaffMember[] = [
   }
 ];
 
+const staticCaregiverData: CaregiverMember[] = [
+  {
+    id: 'caregiver-1',
+    name: 'Maria Rodriguez',
+    role: 'primary',
+    status: 'active',
+    currentRoom: 105,
+    timeInRoom: 15,
+    assignedRooms: [105]
+  },
+  {
+    id: 'caregiver-2',
+    name: 'John Smith',
+    role: 'secondary',
+    status: 'active',
+    currentRoom: 105,
+    timeInRoom: 25,
+    assignedRooms: [105]
+  },
+  {
+    id: 'caregiver-3',
+    name: 'Sarah Johnson',
+    role: 'primary',
+    status: 'off-duty',
+    currentRoom: null,
+    timeInRoom: null,
+    assignedRooms: [100, 101, 102]
+  },
+  {
+    id: 'caregiver-4',
+    name: 'Michael Brown',
+    role: 'relief',
+    status: 'break',
+    currentRoom: null,
+    timeInRoom: null,
+    assignedRooms: [103, 104]
+  },
+  {
+    id: 'caregiver-5',
+    name: 'Emily Chen',
+    role: 'secondary',
+    status: 'off-duty',
+    currentRoom: null,
+    timeInRoom: null,
+    assignedRooms: [106, 107, 108]
+  }
+];
+
 const staticRoomData: RoomStaffing[] = [
   {
-    roomNumber: 100,
-    patientName: 'Drusilla Atherton',
-    patientCondition: 'urgent',
-    assignedStaff: ['staff-3'],
-    currentStaff: [],
-    lastVisit: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
-    minimumStaffNeeded: 1
+    roomNumber: 11,
+    patientName: 'Lily Chen',
+    patientCondition: 'stable',
+    assignedStaff: ['staff-1', 'staff-2'],
+    currentStaff: ['staff-1'],
+    lastVisit: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
+    minimumStaffNeeded: 2,
+    roomName: 'Kitchen'
   },
   {
-    roomNumber: 101,
+    roomNumber: 12,
+    patientName: 'Drusilla Atherton',
+    patientCondition: 'stable',
+    assignedStaff: ['staff-3'],
+    currentStaff: ['staff-3'],
+    lastVisit: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
+    minimumStaffNeeded: 1,
+    roomName: 'Hallway'
+  },
+  {
+    roomNumber: 13,
     patientName: 'Eleanor Ainsworth',
     patientCondition: 'check',
-    assignedStaff: ['staff-3'],
+    assignedStaff: ['staff-4', 'staff-5'],
     currentStaff: [],
-    lastVisit: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8 hours ago
-    minimumStaffNeeded: 1
+    lastVisit: new Date(Date.now() - 120 * 60 * 1000), // 2 hours ago
+    minimumStaffNeeded: 2,
+    roomName: 'Living Room 1'
   },
   {
-    roomNumber: 102,
+    roomNumber: 14,
     patientName: 'Jamal Thompson',
-    patientCondition: 'stable',
-    assignedStaff: ['staff-3'],
-    currentStaff: [],
-    lastVisit: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
-    minimumStaffNeeded: 1
-  },
-  {
-    roomNumber: 103,
-    patientName: 'Thomas Abernathy',
     patientCondition: 'urgent',
-    assignedStaff: ['staff-4'],
-    currentStaff: [],
-    lastVisit: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-    minimumStaffNeeded: 1
-  },
-  {
-    roomNumber: 104,
-    patientName: 'Aiko Tanaka',
-    patientCondition: 'urgent',
-    assignedStaff: ['staff-4'],
-    currentStaff: [],
-    lastVisit: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
-    minimumStaffNeeded: 1
-  },
-  {
-    roomNumber: 105,
-    patientName: 'Lily Chen',
-    patientCondition: 'alerted',
-    assignedStaff: ['staff-1', 'staff-2'],
-    currentStaff: ['staff-1', 'staff-2'],
-    lastVisit: new Date(), // Now (staff currently in room)
-    minimumStaffNeeded: 2
-  },
-  {
-    roomNumber: 106,
-    patientName: 'Latoya Jackson',
-    patientCondition: 'urgent',
-    assignedStaff: ['staff-5'],
-    currentStaff: [],
-    lastVisit: new Date(Date.now() - 10 * 60 * 60 * 1000), // 10 hours ago
-    minimumStaffNeeded: 1
-  },
-  {
-    roomNumber: 107,
-    patientName: 'Mei Chen',
-    patientCondition: 'stable',
-    assignedStaff: ['staff-5'],
-    currentStaff: [],
-    lastVisit: new Date(Date.now() - 9 * 60 * 60 * 1000), // 9 hours ago
-    minimumStaffNeeded: 1
-  },
-  {
-    roomNumber: 108,
-    patientName: 'Daniel Peterson',
-    patientCondition: 'urgent',
-    assignedStaff: ['staff-5'],
-    currentStaff: [],
-    lastVisit: new Date(Date.now() - 11 * 60 * 60 * 1000), // 11 hours ago
-    minimumStaffNeeded: 1
+    assignedStaff: ['staff-1', 'staff-4'],
+    currentStaff: ['staff-1'],
+    lastVisit: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
+    minimumStaffNeeded: 2,
+    roomName: 'Living Room 2'
   }
 ];
 
@@ -282,24 +305,40 @@ const getConditionBadge = (condition: PatientStatus) => {
   }
 }
 
+// Get role badge for caregivers
+const getCaregiverRoleBadge = (role: CaregiverRole) => {
+  switch (role) {
+    case 'primary':
+      return <Badge className="bg-blue-500">Primary Caregiver</Badge>
+    case 'secondary':
+      return <Badge className="bg-green-500">Secondary Caregiver</Badge>
+    case 'relief':
+      return <Badge className="bg-yellow-500">Relief Caregiver</Badge>
+  }
+}
+
 export default function StaffingPage() {
   const router = useRouter()
+  const { role } = useUserRole()
   const [staff] = useState<StaffMember[]>(staticStaffData)
+  const [caregivers] = useState<CaregiverMember[]>(staticCaregiverData)
   const [rooms] = useState<RoomStaffing[]>(staticRoomData)
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedRole, setSelectedRole] = useState<StaffRole | 'all'>('all')
-  const [selectedStatus, setSelectedStatus] = useState<StaffStatus | 'all'>('all')
+  const [selectedRole, setSelectedRole] = useState<StaffRole | CaregiverRole | 'all'>('all')
+  const [selectedStatus, setSelectedStatus] = useState<StaffStatus | CaregiverStatus | 'all'>('all')
   const [selectedCondition, setSelectedCondition] = useState<PatientStatus | 'all'>('all')
   const [showUnderstaffed, setShowUnderstaffed] = useState(false)
   
   // Filtered data
   const [filteredStaff, setFilteredStaff] = useState<StaffMember[]>(staff)
+  const [filteredCaregivers, setFilteredCaregivers] = useState<CaregiverMember[]>(caregivers)
   const [filteredRooms, setFilteredRooms] = useState<RoomStaffing[]>(rooms)
   
   // Pagination
   const [currentStaffPage, setCurrentStaffPage] = useState(0)
+  const [currentCaregiverPage, setCurrentCaregiverPage] = useState(0)
   const [currentRoomPage, setCurrentRoomPage] = useState(0)
   const itemsPerPage = 8
   
@@ -424,18 +463,6 @@ export default function StaffingPage() {
               </p>
             </CardContent>
           </Card>
-          
-          {/* <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Room Coverage</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{Math.round((roomsWithStaff / totalRooms) * 100)}%</div>
-              <p className="text-xs text-muted-foreground">
-                {roomsWithStaff} of {totalRooms} rooms with staff present
-              </p>
-            </CardContent>
-          </Card> */}
           
           <Card>
             <CardHeader className="pb-2">
@@ -572,7 +599,7 @@ export default function StaffingPage() {
             </div>
           </CardContent>
           <CardFooter className="border-t pt-3 text-sm text-muted-foreground">
-            {filteredStaff.length} staff members and {filteredRooms.length} rooms found
+            {`${filteredStaff.length} staff members and ${filteredRooms.length} rooms found`}
           </CardFooter>
         </Card>
         
@@ -610,7 +637,7 @@ export default function StaffingPage() {
                       paginatedRooms.map(room => (
                         <TableRow key={room.roomNumber}>
                           <TableCell className="font-medium">
-                            {room.roomNumber}
+                            {room.roomName}
                           </TableCell>
                           <TableCell>{room.patientName}</TableCell>
                           <TableCell>
@@ -738,8 +765,8 @@ export default function StaffingPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedStaff.length > 0 ? (
-                      paginatedStaff.map(member => (
+                    {filteredStaff.length > 0 ? (
+                      filteredStaff.map(member => (
                         <TableRow key={member.id}>
                           <TableCell className="font-medium">
                             {member.name}

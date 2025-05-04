@@ -182,7 +182,9 @@ const generateMockPatientVitals = (): PatientVitals => {
 }
 
 const generateMockPatientInfo = (roomId: string): PatientInfo => {
-  const roomNumber = parseInt(roomId, 10)
+  // Handle non-numeric room IDs
+  const isNumericRoom = !isNaN(parseInt(roomId, 10));
+  const roomNumber = isNumericRoom ? parseInt(roomId, 10) : 0;
   const allergies = ['Penicillin', 'Peanuts', 'Latex', 'Shellfish', 'None']
   const medications = [
     'Acetaminophen 500mg',
@@ -193,9 +195,9 @@ const generateMockPatientInfo = (roomId: string): PatientInfo => {
   ]
   
   return {
-    name: `Patient ${roomNumber}`,
+    name: isNumericRoom ? `Patient ${roomNumber}` : `Area ${roomId}`,
     age: Math.floor(Math.random() * 50) + 25,
-    roomNumber,
+    roomNumber: isNumericRoom ? roomNumber : 0,
     admissionDate: new Date(Date.now() - Math.floor(Math.random() * 30 * 86400000)),
     diagnosis: ['Pneumonia', 'Fractured hip', 'Post-surgical recovery', 'Cardiac monitoring'][Math.floor(Math.random() * 4)],
     allergies: [allergies[Math.floor(Math.random() * allergies.length)]],
@@ -426,16 +428,20 @@ const staticRoomStatuses: Record<number, PatientStatus> = {
 
 // Define camera feeds and their accessibility rules
 const cameraFeeds = [
-  { roomNumber: 100, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 101, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 102, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 103, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 104, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 105, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 106, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 107, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 108, accessibleTo: ['healthcareProvider'] },
-  { roomNumber: 109, accessibleTo: ['healthcareProvider'] }
+  { roomNumber: '100', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '101', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '102', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '103', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '104', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '105', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '106', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '107', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '108', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: '109', accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 'Kitchen', accessibleTo: ['customer', 'healthcareProvider'] },
+  { roomNumber: 'Hallway', accessibleTo: ['customer', 'healthcareProvider'] },
+  { roomNumber: 'Living Room 1', accessibleTo: ['customer', 'healthcareProvider'] },
+  { roomNumber: 'Living Room 2', accessibleTo: ['customer', 'healthcareProvider'] },
 ];
 
 export default function RoomPage({ params }: { params: { roomId: string } }) {
@@ -443,7 +449,8 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   const { role } = useUserRole()
   const unwrappedParams = React.use(params as any) as { roomId: string }
   const roomId = unwrappedParams.roomId
-  const roomNumber = parseInt(roomId, 10)
+  const isNumericRoom = !isNaN(parseInt(roomId, 10))
+  const roomNumber = isNumericRoom ? parseInt(roomId, 10) : 0
   
   const [messages, setMessages] = useState<{ text: string, sender: 'user' | 'bot', timestamp: Date }[]>([
     { text: "Hello, how can I help you with monitoring this patient?", sender: 'bot', timestamp: new Date() }
@@ -512,7 +519,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   ])
   // Check if the room is accessible to the current user role
   const isRoomAccessible = cameraFeeds.some(
-    (feed: { roomNumber: number; accessibleTo: string | string[] }) => feed.roomNumber === roomNumber && feed.accessibleTo.includes(role)
+    (feed) => feed.roomNumber === roomId && feed.accessibleTo.includes(role)
   );
 
   // If room is not accessible, redirect to dashboard
@@ -575,11 +582,11 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     fetchData();
   }, [roomId]);
   
-  const nearbyRooms = [
+  const nearbyRooms = isNumericRoom ? [
     roomNumber + 1,
     roomNumber + 2,
     roomNumber + 3
-  ]
+  ] : []
   
   // Update function to determine statuses for nearby rooms
   const getNearbyRoomStatus = (roomNum: number): PatientStatus => {
@@ -757,8 +764,11 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     setIsEditing(false)
   }
   
-  const getVideoUrl = (roomNum: number) => {
-    return roomNum >= 100 && roomNum <= 109 ? `/videos/room${roomNum}.webm` : undefined
+  const getVideoUrl = (roomNum: number | string) => {
+    if (typeof roomNum === 'number') {
+      return roomNum >= 100 && roomNum <= 109 ? `/videos/room${roomNum}.webm` : undefined
+    }
+    return `/videos/${roomNum.toLowerCase().replace(/\s+/g, '')}.webm`
   }
   
   return (

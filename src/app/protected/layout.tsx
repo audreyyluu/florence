@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import SidebarComponent from "@/components/protected/Sidebar";
 import type { MenuItem } from "@/components/protected/Sidebar";
 import { useEffect } from "react";
+import { useUserRole } from "@/contexts/UserRoleContext";
 
 export default function ProtectedLayout({
   children,
@@ -20,11 +21,23 @@ export default function ProtectedLayout({
     }
   }, [isLoading, isAuthenticated]);
 
+  const { role: userRole } = useUserRole();
+
+  const isHealthcareProvider = userRole === 'healthcareProvider';
+
   const protectedMenuItems: MenuItem[] = [
     { label: "Dashboard", href: "/protected/", section: "Monitoring" },
     { label: "Alerts History", href: "/protected/alerts", section: "Monitoring" },
-    { label: "Staff Coordination", href: "/protected/staffing", section: "Monitoring" },
-    { label: "Hospital Map", href: "/protected/map", section: "Monitoring" },
+    { 
+      label: isHealthcareProvider ? "Staff Coordination" : "Caregiver Assistance", 
+      href: "/protected/staffing", 
+      section: "Monitoring" 
+    },
+    { 
+      label: isHealthcareProvider ? "Hospital Map" : "Home Map", 
+      href: "/protected/map", 
+      section: "Monitoring" 
+    },
     { label: "Settings", href: "/protected/settings", section: "System" },
     { label: "User Guide", href: "/protected/user-guide", section: "System" }
   ];
