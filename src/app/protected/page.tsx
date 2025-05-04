@@ -70,16 +70,20 @@ const statusPriority: Record<PatientStatus, number> = {
 
 // Sample data for camera feeds
 const cameraFeeds = [
-  { id: 1, roomNumber: 100, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room100.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 2, roomNumber: 101, status: 'check' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room101.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 3, roomNumber: 102, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room102.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 4, roomNumber: 103, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room103.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 5, roomNumber: 104, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room104.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 6, roomNumber: 105, status: 'alerted' as PatientStatus, medicalProfessionals: 3, videoUrl: `/videos/room105.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 7, roomNumber: 106, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room106.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 8, roomNumber: 107, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room107.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 9, roomNumber: 108, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room108.webm`, accessibleTo: ['healthcareProvider'] },
-  { id: 10, roomNumber: 109, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room109.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 1, roomNumber: 'Room 100', status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room100.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 2, roomNumber: 'Room 101', status: 'check' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room101.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 3, roomNumber: 'Room 102', status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room102.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 4, roomNumber: 'Room 103', status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room103.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 5, roomNumber: 'Room 104', status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room104.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 6, roomNumber: 'Room 105', status: 'alerted' as PatientStatus, medicalProfessionals: 3, videoUrl: `/videos/room105.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 7, roomNumber: 'Room 106', status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room106.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 8, roomNumber: 'Room 107', status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room107.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 9, roomNumber: 'Room 108', status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room108.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 10, roomNumber: 'Room 109', status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room109.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 11, roomNumber: 'Kitchen', status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/kitchen.mp4`, accessibleTo: ['customer'] },
+  { id: 12, roomNumber: 'Hallway', status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/hallway.mp4`, accessibleTo: ['customer'] },
+  { id: 13, roomNumber: 'Living Room 1', status: 'check' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/living_room_1.mp4`, accessibleTo: ['customer'] },
+  { id: 14, roomNumber: 'Living Room 2', status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/living_room_2.mp4`, accessibleTo: ['customer'] },
 ];
 
 export default function ProtectedPage() {
@@ -229,7 +233,7 @@ export default function ProtectedPage() {
                       videoUrl={feed.videoUrl}
                     />
                     <CardFooter className="flex justify-between py-2">
-                      <div className="font-medium">Room {feed.roomNumber}</div>
+                      <div className="font-medium">{feed.roomNumber}</div>
                       <div className="flex items-center gap-1.5">
                         <User className="h-4 w-4" />
                         <span>{feed.medicalProfessionals}</span>
