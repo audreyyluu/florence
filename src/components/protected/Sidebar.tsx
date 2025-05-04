@@ -111,8 +111,9 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Logo in Sidebar */}
         <div className="p-4 flex justify-between items-center">
-          <Link href="/" prefetch={true}>
-            <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert"></Image>
+          <Link href="/" prefetch={true} className='flex flex-row gap-x-2'>
+            <Image alt="logo" src="/Florence.svg" width={25} height={15} className="dark:invert" />
+            <h1 className="text-lg sm:text-2xl md:text-2xl font-bold tracking-tighter bg-clip-text text-indigo-900">Florence</h1>
           </Link>
           {/* Close button - Only visible on mobile */}
           {isMobile && !collapsed && (

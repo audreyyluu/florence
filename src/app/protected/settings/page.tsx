@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useMutation, useQuery } from "convex/react"
-import { api } from "@/convex/_generated/api"
+import { createClient } from "@/lib/supabase/client"
 import { useAuth } from "@/hooks/use-auth"
 import { 
   User, 
@@ -67,16 +66,18 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
+  console.log(user)
+
   // Mutations
-  const updateEmail = useMutation(api.users.updateEmail)
-  const updateProfileImage = useMutation(api.users.updateProfileImage)
-  const updateTheme = useMutation(api.users.updateTheme)
+  const updateEmail = (email: string) => { return true; }
+  const updateProfileImage = (pfp: string) => { return true; }
+  const updateTheme = (theme: string) => { return true; }
   
   // Initialize form with user data
   useEffect(() => {
     if (user) {
-      setEmail(user.email || "")
-      setImageUrl(user.image || "")
+      setEmail("nathan@memorialcare.org")
+      setImageUrl("https://img.freepik.com/premium-photo/headshot-doctor_810293-454.jpg")
     }
   }, [user])
   
@@ -91,7 +92,7 @@ export default function SettingsPage() {
     setError(null)
     
     try {
-      await updateEmail({ email })
+      //await updateEmail({ email })
       toast.success("Email updated successfully")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update email")
@@ -112,7 +113,7 @@ export default function SettingsPage() {
     setError(null)
     
     try {
-      await updateProfileImage({ imageUrl })
+      //await updateProfileImage({ imageUrl })
       toast.success("Profile image updated successfully")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update profile image")
@@ -127,7 +128,7 @@ export default function SettingsPage() {
     setTheme(newTheme)
     
     try {
-      await updateTheme({ theme: newTheme })
+      //await updateTheme({ theme: newTheme })
     } catch (err) {
       console.error("Failed to save theme preference:", err)
     }
@@ -159,8 +160,8 @@ export default function SettingsPage() {
   
   // Get user initials for avatar fallback
   const getInitials = () => {
-    if (!user?.name) return "U"
-    return user.name.split(" ")
+    if (user) return "U"
+    return "Nathan Che".split(" ")
       .map(n => n[0])
       .join("")
       .toUpperCase()
@@ -208,11 +209,11 @@ export default function SettingsPage() {
               <CardContent className="space-y-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <Avatar className="h-16 w-16">
-                    <AvatarImage src={user?.image || ""} alt={user?.name || "User"} />
+                    <AvatarImage src={imageUrl || ""} alt={"User"} />
                     <AvatarFallback className="text-lg">{getInitials()}</AvatarFallback>
                   </Avatar>
                   <div className="space-y-1 flex-1">
-                    <h3 className="font-medium">{user?.name || "User"}</h3>
+                    <h3 className="font-medium">{"Nathan Che"}</h3>
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
                 </div>
@@ -256,7 +257,7 @@ export default function SettingsPage() {
                       />
                       <Button 
                         onClick={handleImageUpdate}
-                        disabled={isSaving || imageUrl === user?.image}
+                        disabled={isSaving || imageUrl === imageUrl}
                       >
                         {isSaving ? (
                           <Loader2 className="h-4 w-4 animate-spin mr-2" />

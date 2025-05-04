@@ -24,7 +24,8 @@ export function Header() {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             <Link href="/" className="flex items-center gap-2">
-              <Image alt="logo" src="/florence_logo.png" width={140} height={110} className="dark:invert" />
+              <Image alt="logo" src="/Florence.svg" width={25} height={15} className="dark:invert" />
+              <h1 className="text-lg sm:text-2xl md:text-2xl font-bold tracking-tighter bg-clip-text text-indigo-900">Florence</h1>
             </Link>
           </motion.div>
           

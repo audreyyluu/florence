@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 126.77 149.13">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-4);
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient-3);
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="0" y1="111.06" x2="49.94" y2="111.06" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#003aaa"/>
+      <stop offset="1" stop-color="#6a73ff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="6.98" y1="23.82" x2="126.77" y2="23.82" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-3" x1="4.75" y1="61.41" x2="89.28" y2="61.41" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-4" x1="16.87" y1="122.78" x2="62.42" y2="122.78" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#003aaa"/>
+      <stop offset="1" stop-color="#2400e9"/>
+    </linearGradient>
+  </defs>
+  <g id="Florence_Logo" data-name="Florence Logo">
+    <g>
+      <path class="cls-4" d="M24.5,79.96c10.52-6.27,23.97-8.61,25.33-5.82,2.12,4.34-28.57,14-39.52,41.98-6.72,17.18-2.72,32.86-4.72,33.01-2,.16-7.56-15.31-4.87-32.05.87-5.4,5.01-25.93,23.78-37.12Z"/>
+      <path class="cls-3" d="M7.21,47.38c-2.02-2.4,8.96-20.67,27.5-29.61,18.67-9.01,27.34-.04,56.68-6.74C113.58,5.97,123.55-2.57,126.16.74c3.45,4.37-8,26.78-27.64,34.47-22.13,8.66-35.88-8.74-64.58-.26-16.31,4.82-25.11,14.36-26.73,12.44Z"/>
+      <path class="cls-2" d="M5.48,80.13c-1.62-.52-1.02-16.61,7.12-24.98,11.14-11.45,26.04-12.24,29.02-12.4,8.76-.46,12.34,1.64,25.31,2.44,16.47,1.02,20.02-2.24,21.9.9,2.46,4.11-5.38,17.34-17.5,21.93-13.95,5.28-22.98-4.9-41.28-3.23-12.84,1.17-23.52,15.68-24.57,15.34Z"/>
+      <path class="cls-1" d="M23.34,108.28c-.09-.11-.2-.2-.34-.24-1.65-.41-6.46,7.57-6.12,11.96.96,12.47,45.17,18.74,45.54,17.34.2-.77-13.17-2.17-26.14-13.31-6.2-5.33-10.28-11.13-12.94-15.75Z"/>
+    </g>
+  </g>
+</svg>
