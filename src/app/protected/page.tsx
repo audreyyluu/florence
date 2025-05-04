@@ -1,6 +1,6 @@
 "use client"
 import { useState, Suspense, lazy, useEffect } from "react";
-import { Eye, Palette, User, AlertTriangle, Plus } from "lucide-react";
+import { Eye, Palette, User, AlertTriangle, Plus, Camera } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import {
   Card,
@@ -33,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { prefetchDashboardPages, prefetchNextPageData } from "@/utils/prefetch";
+import { useUserRole } from "@/contexts/UserRoleContext";
 
 // Lazy load less critical components
 const CameraFeed = lazy(() => import("@/components/protected/CameraFeed").then(mod => ({ default: mod.CameraFeed })));
@@ -69,23 +70,16 @@ const statusPriority: Record<PatientStatus, number> = {
 
 // Sample data for camera feeds
 const cameraFeeds = [
-  { id: 1, roomNumber: 100, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room100.webm` },
-  { id: 2, roomNumber: 101, status: 'check' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room101.webm` },
-  { id: 3, roomNumber: 102, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room102.webm` },
-  { id: 4, roomNumber: 103, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room103.webm` },
-  { id: 5, roomNumber: 104, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room104.webm` },
-  { id: 6, roomNumber: 105, status: 'alerted' as PatientStatus, medicalProfessionals: 3, videoUrl: `/videos/room105.webm` },
-  { id: 7, roomNumber: 106, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room106.webm` },
-  { id: 8, roomNumber: 107, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room107.webm` },
-  { id: 9, roomNumber: 108, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room108.webm` },
-  { id: 10, roomNumber: 109, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room109.webm` },
-  ...Array.from({ length: 8 }, (_, i) => ({
-    id: i + 11,
-    roomNumber: 110 + i,
-    status: ['stable', 'check', 'urgent', 'alerted'][Math.floor(Math.random() * 4)] as PatientStatus,
-    medicalProfessionals: 1,
-    videoUrl: undefined,
-  }))
+  { id: 1, roomNumber: 100, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room100.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 2, roomNumber: 101, status: 'check' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room101.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 3, roomNumber: 102, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room102.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 4, roomNumber: 103, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room103.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 5, roomNumber: 104, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room104.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 6, roomNumber: 105, status: 'alerted' as PatientStatus, medicalProfessionals: 3, videoUrl: `/videos/room105.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 7, roomNumber: 106, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room106.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 8, roomNumber: 107, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room107.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 9, roomNumber: 108, status: 'urgent' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room108.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 10, roomNumber: 109, status: 'stable' as PatientStatus, medicalProfessionals: 1, videoUrl: `/videos/room109.webm`, accessibleTo: ['healthcareProvider'] },
 ];
 
 export default function ProtectedPage() {
@@ -98,14 +92,20 @@ export default function ProtectedPage() {
   const [newRoomNumber, setNewRoomNumber] = useState("");
   const [showAddCamera, setShowAddCamera] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  
+  const { role } = useUserRole();
+
+  // Filter camera feeds based on user role
+  const filteredCameraFeeds = cameraFeeds.filter(feed => 
+    feed.accessibleTo.includes(role)
+  );
+
   // Display 9 videos per page
   const videosPerPage = 9;
-  const totalPages = Math.ceil(cameraFeeds.length / videosPerPage);
+  const totalPages = Math.ceil(filteredCameraFeeds.length / videosPerPage);
   
   // Separate feeds with and without video streaming
-  const streamingFeeds = cameraFeeds.filter(feed => feed.videoUrl);
-  const nonStreamingFeeds = cameraFeeds.filter(feed => !feed.videoUrl);
+  const streamingFeeds = filteredCameraFeeds.filter(feed => feed.videoUrl);
+  const nonStreamingFeeds = filteredCameraFeeds.filter(feed => !feed.videoUrl);
   
   // Sort only the streaming feeds by status priority
   const sortedStreamingFeeds = [...streamingFeeds].sort((a, b) => 
@@ -197,32 +197,65 @@ export default function ProtectedPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {currentFeeds.map((feed) => (
-          <Suspense key={feed.id} fallback={<LoadingCard />}>
-            <Card 
-              className="overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary transition-all relative"
-              onClick={() => handleRoomClick(feed.roomNumber)}
+      <div>
+        {currentFeeds.some(feed => 
+          cameraFeeds.some(camera => 
+            camera.roomNumber === feed.roomNumber && camera.accessibleTo.includes(role)
+          )
+        ) ? (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {currentFeeds.map((feed) => {
+              // Check if room is accessible based on role
+              const isAccessible = cameraFeeds.some(
+                camera => camera.roomNumber === feed.roomNumber && camera.accessibleTo.includes(role)
+              );
+
+              // Skip rendering if not accessible
+              if (!isAccessible) return null;
+
+              return (
+                <Suspense key={feed.id} fallback={<LoadingCard />}>
+                  <Card 
+                    className="overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary transition-all relative"
+                    onClick={() => handleRoomClick(feed.roomNumber)}
+                  >
+                    {/* Status indicator banner */}
+                    <div className={`absolute top-0 left-0 right-0 h-6 ${statusColors[feed.status].color} flex items-center justify-between px-2 z-10`}>
+                      <span className="text-xs font-medium">{statusColors[feed.status].label}</span>
+                    </div>
+                    
+                    <CameraFeed 
+                      roomNumber={feed.roomNumber} 
+                      videoUrl={feed.videoUrl}
+                    />
+                    <CardFooter className="flex justify-between py-2">
+                      <div className="font-medium">Room {feed.roomNumber}</div>
+                      <div className="flex items-center gap-1.5">
+                        <User className="h-4 w-4" />
+                        <span>{feed.medicalProfessionals}</span>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </Suspense>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 rounded-lg border border-dashed border-gray-300 bg-background/50">
+            <Camera className="w-16 h-16 text-muted-foreground mb-4" />
+            <p className="text-xl font-medium text-foreground">No cameras available</p>
+            <p className="text-sm text-muted-foreground mt-1">Add a new camera to get started</p>
+            <Button 
+              variant="outline"
+              size="sm" 
+              className="mt-4"
+              onClick={() => setShowAddCamera(true)}
             >
-              {/* Status indicator banner */}
-              <div className={`absolute top-0 left-0 right-0 h-6 ${statusColors[feed.status].color} flex items-center justify-between px-2 z-10`}>
-                <span className="text-xs font-medium">{statusColors[feed.status].label}</span>
-              </div>
-              
-              <CameraFeed 
-                roomNumber={feed.roomNumber} 
-                videoUrl={feed.videoUrl}
-              />
-              <CardFooter className="flex justify-between py-2">
-                <div className="font-medium">Room {feed.roomNumber}</div>
-                <div className="flex items-center gap-1.5">
-                  <User className="h-4 w-4" />
-                  <span>{feed.medicalProfessionals}</span>
-                </div>
-              </CardFooter>
-            </Card>
-          </Suspense>
-        ))}
+              <Camera className="h-4 w-4 mr-2" />
+              Add Camera
+            </Button>
+          </div>
+        )}
       </div>
 
       {totalPages > 1 && (

@@ -42,6 +42,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { motion } from "framer-motion"
+import { useUserRole } from "@/contexts/UserRoleContext"
 
 type RoomStatus = 'stable' | 'check' | 'urgent' | 'alerted'
 type FloorLevel = '1' | '2' | '3'
@@ -68,6 +69,15 @@ interface RoomData {
     description: string
     type: 'movement' | 'staff' | 'alert' | 'vitals'
   }[]
+}
+
+interface CameraFeed {
+  id: number;
+  roomNumber: number;
+  status: RoomStatus;
+  medicalProfessionals: number;
+  videoUrl?: string;
+  accessibleTo: string[];
 }
 
 const generateMockRooms = (): RoomData[] => {
@@ -184,8 +194,31 @@ const getStatusBadge = (status: RoomStatus) => {
   }
 }
 
+// Sample data for camera feeds
+const cameraFeeds: CameraFeed[] = [
+  { id: 1, roomNumber: 100, status: 'urgent', medicalProfessionals: 1, videoUrl: `/videos/room100.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 2, roomNumber: 101, status: 'check', medicalProfessionals: 1, videoUrl: `/videos/room101.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 3, roomNumber: 102, status: 'stable', medicalProfessionals: 1, videoUrl: `/videos/room102.webm`, accessibleTo: ['healthcareProvider', 'customer'] },
+  { id: 4, roomNumber: 103, status: 'urgent', medicalProfessionals: 1, videoUrl: `/videos/room103.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 5, roomNumber: 104, status: 'urgent', medicalProfessionals: 1, videoUrl: `/videos/room104.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 6, roomNumber: 105, status: 'alerted', medicalProfessionals: 3, videoUrl: `/videos/room105.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 7, roomNumber: 106, status: 'urgent', medicalProfessionals: 1, videoUrl: `/videos/room106.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 8, roomNumber: 107, status: 'stable', medicalProfessionals: 1, videoUrl: `/videos/room107.webm`, accessibleTo: ['healthcareProvider', 'customer'] },
+  { id: 9, roomNumber: 108, status: 'urgent', medicalProfessionals: 1, videoUrl: `/videos/room108.webm`, accessibleTo: ['healthcareProvider'] },
+  { id: 10, roomNumber: 109, status: 'stable', medicalProfessionals: 1, videoUrl: `/videos/room109.webm`, accessibleTo: ['healthcareProvider', 'customer'] },
+  ...Array.from({ length: 8 }, (_, i) => ({
+    id: i + 11,
+    roomNumber: 110 + i,
+    status: ['stable', 'check', 'urgent', 'alerted'][Math.floor(Math.random() * 4)] as RoomStatus,
+    medicalProfessionals: 1,
+    videoUrl: undefined,
+    accessibleTo: ['healthcareProvider', 'customer']
+  }))
+];
+
 export default function HospitalMapPage() {
   const router = useRouter()
+  const { role } = useUserRole()
   const [rooms] = useState<RoomData[]>(generateMockRooms())
   const [selectedFloor, setSelectedFloor] = useState<FloorLevel>('1')
   const [selectedWing, setSelectedWing] = useState<WingSection | 'all'>('all')
@@ -194,7 +227,15 @@ export default function HospitalMapPage() {
   const [selectedRoom, setSelectedRoom] = useState<RoomData | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   
+  // Filter rooms based on user role
+  const accessibleRooms = cameraFeeds
+    .filter(feed => feed.accessibleTo.includes(role))
+    .map(feed => feed.roomNumber)
+
   const filteredRooms = rooms.filter(room => {
+    // First check if the room is accessible to the current user role
+    if (!accessibleRooms.includes(room.roomNumber)) return false
+    
     if (room.floor !== selectedFloor) return false
     
     if (selectedWing !== 'all' && room.wing !== selectedWing) return false
@@ -245,10 +286,10 @@ export default function HospitalMapPage() {
   }
   
   const totalRooms = filteredRooms.length
-  const stableRooms = filteredRooms.filter(r => r.status === 'stable').length
-  const checkRooms = filteredRooms.filter(r => r.status === 'check').length
-  const urgentRooms = filteredRooms.filter(r => r.status === 'urgent').length
-  const alertedRooms = filteredRooms.filter(r => r.status === 'alerted').length
+  const stableRooms = filteredRooms.filter(r => r.status === 'stable' && accessibleRooms.includes(r.roomNumber)).length
+  const checkRooms = filteredRooms.filter(r => r.status === 'check' && accessibleRooms.includes(r.roomNumber)).length
+  const urgentRooms = filteredRooms.filter(r => r.status === 'urgent' && accessibleRooms.includes(r.roomNumber)).length
+  const alertedRooms = filteredRooms.filter(r => r.status === 'alerted' && accessibleRooms.includes(r.roomNumber)).length
   
   return (
     <div className="container py-6">
@@ -420,32 +461,38 @@ export default function HospitalMapPage() {
                     <div key={wing} className="space-y-2">
                       <h3 className="text-sm font-medium">Wing {wing}</h3>
                       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                        {rooms.map(room => (
-                          <TooltipProvider key={room.id}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <motion.div
-                                  className={`aspect-square ${getStatusColor(room.status)} rounded-md border p-2 cursor-pointer flex flex-col items-center justify-center text-center hover:ring-2 hover:ring-primary transition-all ${selectedRoom?.id === room.id ? 'ring-2 ring-primary' : ''}`}
-                                  onClick={() => handleRoomClick(room)}
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                >
-                                  <div className="text-xs font-medium">{room.roomNumber}</div>
-                                  {room.hasAlert && (
-                                    <AlertTriangle className="h-3 w-3 text-red-500 mt-1" />
-                                  )}
-                                </motion.div>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <div className="text-xs">
-                                  <p className="font-medium">Room {room.roomNumber}</p>
-                                  <p>{room.patientName || 'No patient'}</p>
-                                  <p>Status: {room.status}</p>
-                                </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        ))}
+                        {rooms.map(room => {
+                          // Only render the room if it's accessible to the current user
+                          if (!accessibleRooms.includes(room.roomNumber)) {
+                            return null;
+                          }
+                          return (
+                            <TooltipProvider key={room.id}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <motion.div
+                                    className={`aspect-square ${getStatusColor(room.status)} rounded-md border p-2 cursor-pointer flex flex-col items-center justify-center text-center hover:ring-2 hover:ring-primary transition-all ${selectedRoom?.id === room.id ? 'ring-2 ring-primary' : ''}`}
+                                    onClick={() => handleRoomClick(room)}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                  >
+                                    <div className="text-xs font-medium">{room.roomNumber}</div>
+                                    {room.hasAlert && (
+                                      <AlertTriangle className="h-3 w-3 text-red-500 mt-1" />
+                                    )}
+                                  </motion.div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <div className="text-xs">
+                                    <p className="font-medium">Room {room.roomNumber}</p>
+                                    <p>{room.patientName || 'No patient'}</p>
+                                    <p>Status: {room.status}</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}

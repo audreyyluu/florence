@@ -37,6 +37,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Slider } from "@/components/ui/slider"
 import { Textarea } from "@/components/ui/textarea"
 import { CameraFeed } from "@/components/protected/CameraFeed"
+import { useUserRole } from "@/contexts/UserRoleContext"
 
 type DangerousBehavior = {
   id: string
@@ -423,8 +424,23 @@ const staticRoomStatuses: Record<number, PatientStatus> = {
   109: 'stable',
 };
 
+// Define camera feeds and their accessibility rules
+const cameraFeeds = [
+  { roomNumber: 100, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 101, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 102, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 103, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 104, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 105, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 106, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 107, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 108, accessibleTo: ['healthcareProvider'] },
+  { roomNumber: 109, accessibleTo: ['healthcareProvider'] }
+];
+
 export default function RoomPage({ params }: { params: { roomId: string } }) {
   const router = useRouter()
+  const { role } = useUserRole()
   const unwrappedParams = React.use(params as any) as { roomId: string }
   const roomId = unwrappedParams.roomId
   const roomNumber = parseInt(roomId, 10)
@@ -494,6 +510,21 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
       ]
     }
   ])
+  // Check if the room is accessible to the current user role
+  const isRoomAccessible = cameraFeeds.some(
+    (feed: { roomNumber: number; accessibleTo: string | string[] }) => feed.roomNumber === roomNumber && feed.accessibleTo.includes(role)
+  );
+
+  // If room is not accessible, redirect to dashboard
+  useEffect(() => {
+    if (!isRoomAccessible) {
+      router.push('/protected');
+    }
+  }, [isRoomAccessible, router]);
+
+  if (!isRoomAccessible) {
+    return null; // Will be redirected by useEffect
+  }
   
   // ECG animation
   useEffect(() => {

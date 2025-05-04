@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { AppStateProvider } from '@/contexts/AppStateContext'
+import { UserRoleProvider } from "@/contexts/UserRoleContext";
 
 // Optimize fonts by using the next/font feature
 const geistSans = Geist({
@@ -53,7 +54,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <ConvexClientProvider>{children}</ConvexClientProvider>
+            <ConvexClientProvider>
+              <UserRoleProvider>{children}</UserRoleProvider>
+            </ConvexClientProvider>
           </ThemeProvider>
         </AppStateProvider>
       </body>

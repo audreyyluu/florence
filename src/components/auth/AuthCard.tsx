@@ -16,10 +16,11 @@ import {
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowRight, Loader2, Mail } from "lucide-react";
+import { ArrowRight, Loader2, Mail, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { UserRole, useUserRole } from "@/contexts/UserRoleContext";
 
 interface AuthCardProps {
   onAuthSuccess?: () => void;
@@ -27,10 +28,11 @@ interface AuthCardProps {
 
 export function AuthCard({ onAuthSuccess }: AuthCardProps) {
   const { signIn } = useAuth();
-  const [step, setStep] = useState<"signIn" | { email: string }>("signIn");
+  const [step, setStep] = useState<"userType" | "signIn" | { email: string }>("userType");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { setRole } = useUserRole();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -94,6 +96,10 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
       );
       setIsLoading(false);
     }
+  };
+  const handleSelectRole = (role: UserRole) => {
+    setRole(role);
+    setStep("signIn");
   };
 
   return (
@@ -186,7 +192,44 @@ export function AuthCard({ onAuthSuccess }: AuthCardProps) {
                 )}
               </CardContent>
             </>
-          ) : (
+          ) : step === 'userType' ? 
+          
+          <>
+            <CardContent className="text-center">
+              <CardTitle className="text-2xl font-bold">Choose Your Role</CardTitle>
+              <CardDescription className="text-muted-foreground mt-2 mb-8">
+                Select how you'll be using Florence
+              </CardDescription>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Button
+                  variant="outline"
+                  className="flex flex-col items-center justify-center h-50 w-50 transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white"
+                  onClick={() => handleSelectRole("healthcareProvider")}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-10">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  </svg>
+
+                  <span className="text-lg font-medium">Healthcare Provider</span>
+                  <span className="text-sm mt-1 ">I provide healthcare services</span>
+                </Button>
+
+                <Button
+                  variant="outline" 
+                  className="flex flex-col items-center justify-center h-50 w-50 transition-all hover:scale-[1.02] active:scale-[0.98] hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white"
+                  onClick={() => handleSelectRole("customer")}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-10">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                  </svg>
+                  <span className="text-lg font-medium">Customer</span>
+                  <span className="text-sm mt-1">I own Florence cameras</span>
+                </Button>
+              </div>
+            </CardContent>
+          </>
+          
+          : (
             <>
               <CardHeader className="text-center mt-4">
                 <CardTitle>Check your email</CardTitle>
