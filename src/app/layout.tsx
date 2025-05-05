@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   title: "Florence",
   description: "Advanced monitoring solutions for healthcare environments",
   icons: {
-    icon: "/favicon_crack_light.png",
+    icon: "/Florence.svg",
   },
 };
 

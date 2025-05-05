@@ -226,7 +226,7 @@ export default function UserGuidePage() {
                             <Plus className="h-5 w-5 text-primary mt-0.5" />
                             <div>
                               <span className="font-medium">Add Camera Button</span>
-                              <p className="text-sm">Located in the bottom right, allows adding new camera feeds</p>
+                              <p className="text-sm">Located in the top right, allows adding new camera feeds</p>
                             </div>
                           </li>
                         </ul>
@@ -273,7 +273,7 @@ export default function UserGuidePage() {
                         To add a new camera to the system:
                       </p>
                       <ol className="list-decimal pl-6 mt-2 space-y-1">
-                        <li>Click the "+" button in the bottom right corner of the Dashboard</li>
+                        <li>You can use the "Add Camera" button in the top right of the dashboard, next to the surveillance operators icon</li>
                         <li>Enter the camera IP address in the format "192.168.1.100"</li>
                         <li>Enter the room number (e.g., "101")</li>
                         <li>Click "Add Camera" to save</li>

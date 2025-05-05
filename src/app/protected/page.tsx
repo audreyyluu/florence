@@ -146,7 +146,7 @@ export default function ProtectedPage() {
     setCurrentPage(pageNumber);
   };
 
-  const handleRoomClick = (roomNumber: number) => {
+  const handleRoomClick = (roomNumber: string | number) => {
     router.push(`/protected/rooms/${roomNumber}`);
   };
 
@@ -163,6 +163,15 @@ export default function ProtectedPage() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold tracking-tight">Surveillance Dashboard</h2>
         <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8"
+            onClick={() => setShowAddCamera(true)}
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Add Camera
+          </Button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -229,7 +238,7 @@ export default function ProtectedPage() {
                     </div>
                     
                     <CameraFeed 
-                      roomNumber={feed.roomNumber} 
+                      roomNumber={feed.id} 
                       videoUrl={feed.videoUrl}
                     />
                     <CardFooter className="flex justify-between py-2">
@@ -316,16 +325,6 @@ export default function ProtectedPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <div className="fixed bottom-6 right-6">
-        <Button
-          onClick={() => setShowAddCamera(true)}
-          size="icon"
-          className="h-12 w-12 rounded-full shadow-lg"
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
-      </div>
     </div>
   );
 }

@@ -177,9 +177,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         
         {/* Credit text */}
         <div className="px-4 py-3 text-xs text-center border-t border-border">
-          Cooked on <Link href="https://crack.diy" className="underline">
-            crack.diy
-          </Link>
+          Florence © 2025
         </div>
       </div>
 

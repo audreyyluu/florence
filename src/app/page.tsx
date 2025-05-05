@@ -1,4 +1,4 @@
-// This is the landing page for CareCam hospital surveillance website
+// This is the landing page for Florence intelligent patient monitoring system
 "use client"
 import { HeroContent } from "@/components/landing/HeroContent";
 import { Header } from "@/components/landing/Header";
@@ -26,8 +26,20 @@ export default function Home() {
       
       <div className="max-w-7xl mx-auto relative px-6 z-10 w-full py-0">
         <Header />
-        <HeroContent />
+        
+        {/* Main content with section IDs */}
+        <section id="hero">
+          <HeroContent />
+        </section>
       </div>
+      
+      {/* Hidden anchor tags for navigation */}
+      <div className="hidden">
+        <div id="features"></div>
+        <div id="benefits"></div>
+        <div id="pricing"></div>
+      </div>
+      
       <Footer />
     </motion.div>
   );
