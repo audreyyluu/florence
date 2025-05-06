@@ -133,9 +133,9 @@ export function HeroContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl sm:text-6xl md:text-7xl font-medium italic tracking-tighter text-indigo-900 leading-tight"            
+              className="text-3xl sm:text-4xl md:text-5xl font-medium italic tracking-tighter text-indigo-900 leading-tight"            
             >
-              Transform Patient Care with AI Intelligence
+              Empowering Nurses. Enhancing Care. Revolutionizing Healthcare.
             </motion.h1>
             
             <motion.p 
@@ -144,10 +144,10 @@ export function HeroContent() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl text-gray-600 max-w-2xl mx-auto"
             > 
-              Florence is an intelligent, real-time patient monitoring system that optimizes hospital operations, reduces nursing workload, and transforms reactive care into proactive intervention.
+              Meet Florence, an AI agent with real-time patient monitoring system that optimizes hospital operations, reduces nursing workload, and transforms reactive care into proactive intervention.
             </motion.p>
             
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
